@@ -1,0 +1,298 @@
+<div class="doctor-page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="doctor-header">
+
+    <button
+      class="back-button"
+      type="button"
+      routerLink="/patient/book-appointment"
+      aria-label="Go back"
+    >
+      <span class="material-icons">
+        arrow_back_ios
+      </span>
+    </button>
+
+    <h1>Select Doctor</h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+
+  <!-- =====================================================
+       BOOKING PROGRESS
+  ====================================================== -->
+
+  <app-appointment-progress
+    [currentStep]="2">
+  </app-appointment-progress>
+
+
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
+
+  <main class="doctor-content">
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+      <span class="material-icons search-icon">
+        search
+      </span>
+
+      <input
+        type="text"
+        placeholder="Search doctor..."
+        [(ngModel)]="searchTerm"
+      />
+
+    </div>
+
+
+    <!-- ===================================================
+         FILTERS
+    ==================================================== -->
+
+    <div class="filters">
+
+      <button
+        type="button"
+        [class.active]="selectedCategory === 'All'"
+        (click)="selectedCategory = 'All'"
+      >
+        All
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedCategory === 'General'"
+        (click)="selectedCategory = 'General'"
+      >
+        GP
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedCategory === 'Dentist'"
+        (click)="selectedCategory = 'Dentist'"
+      >
+        Dentist
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedCategory === 'Pediatric'"
+        (click)="selectedCategory = 'Pediatric'"
+      >
+        Pediatrics
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         SELECTED SERVICE
+    ==================================================== -->
+
+    <div
+      class="selected-service"
+      *ngIf="selectedService"
+    >
+
+      <span class="material-icons">
+        medical_services
+      </span>
+
+      <span>
+        {{ selectedService }}
+      </span>
+
+    </div>
+
+
+    <!-- ===================================================
+         DOCTOR LIST
+    ==================================================== -->
+
+    <section class="doctor-list">
+
+      <button
+        *ngFor="let doctor of filteredDoctors"
+        type="button"
+        class="doctor-card"
+        [class.selected]="selectedDoctor === doctor.name"
+        (click)="selectDoctor(doctor)"
+      >
+
+        <!-- DOCTOR AVATAR -->
+
+        <div class="doctor-avatar">
+
+          <span class="material-icons">
+            person
+          </span>
+
+        </div>
+
+
+        <!-- DOCTOR INFORMATION -->
+
+        <div class="doctor-information">
+
+          <h2>
+            {{ doctor.name }}
+          </h2>
+
+          <p>
+            {{ doctor.specialty }}
+          </p>
+
+
+          <div class="doctor-meta">
+
+            <span>
+              ⭐ {{ doctor.rating }}
+            </span>
+
+            <span>
+              ◷ {{ doctor.experience }}yrs
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- AVAILABILITY -->
+
+        <span
+          class="available"
+          *ngIf="doctor.available"
+        >
+          Available
+        </span>
+
+        <span
+          class="unavailable"
+          *ngIf="!doctor.available"
+        >
+          Unavailable
+        </span>
+
+
+        <!-- SELECTED CHECK -->
+
+        <div
+          class="selected-check"
+          *ngIf="selectedDoctor === doctor.name"
+        >
+
+          <span class="material-icons">
+            check
+          </span>
+
+        </div>
+
+      </button>
+
+
+      <!-- NO RESULTS -->
+
+      <div
+        class="no-results"
+        *ngIf="filteredDoctors.length === 0"
+      >
+
+        <span class="material-icons">
+          person_search
+        </span>
+
+        <p>
+          No doctors found
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         CONTINUE
+    ==================================================== -->
+
+    <button
+      class="continue-button"
+      type="button"
+      [disabled]="!selectedDoctor"
+      (click)="continue()"
+    >
+      Continue
+    </button>
+
+  </main>
+
+
+  <!-- =====================================================
+       BOTTOM NAVIGATION
+  ====================================================== -->
+
+  <nav class="bottom-navigation">
+
+    <a
+      routerLink="/patient/dashboard"
+    >
+      <span class="material-icons">
+        home
+      </span>
+
+      <span>
+        Home
+      </span>
+    </a>
+
+
+    <a
+      class="active"
+      routerLink="/patient/book-appointment"
+    >
+      <span class="material-icons">
+        calendar_month
+      </span>
+
+      <span>
+        Appointments
+      </span>
+    </a>
+
+
+    <a>
+      <span class="material-icons">
+        description
+      </span>
+
+      <span>
+        Records
+      </span>
+    </a>
+
+
+    <a>
+      <span class="material-icons">
+        person
+      </span>
+
+      <span>
+        Profile
+      </span>
+    </a>
+
+  </nav>
+
+</div>

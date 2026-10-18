@@ -1,0 +1,128 @@
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Patients</h1>
+      <p>Manage registered mobile clinic patients.</p>
+    </div>
+
+    <button class="primary-button">
+      <span class="material-icons">person_add</span>
+      Add Patient
+    </button>
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">people</span>
+      </div>
+      <div>
+        <span>Total Patients</span>
+        <strong>1,248</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">person</span>
+      </div>
+      <div>
+        <span>Active Patients</span>
+        <strong>1,102</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">update</span>
+      </div>
+      <div>
+        <span>Follow-ups</span>
+        <strong>86</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <div class="search-box">
+        <span class="material-icons">search</span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search patients...">
+      </div>
+
+      <select [(ngModel)]="selectedStatus">
+        <option>All</option>
+        <option>Active</option>
+        <option>Follow-up</option>
+      </select>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>ID</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Last Visit</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let patient of filteredPatients">
+
+            <td class="patient-name">
+              <div class="avatar">
+                {{ patient.name.charAt(0) }}
+              </div>
+              {{ patient.name }}
+            </td>
+
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
+            <td>{{ patient.phone }}</td>
+            <td>{{ patient.lastVisit }}</td>
+
+            <td>
+              <span
+                class="status"
+                [class.follow-up]="patient.status === 'Follow-up'">
+                {{ patient.status }}
+              </span>
+            </td>
+
+            <td>
+              <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+              </button>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

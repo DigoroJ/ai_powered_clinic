@@ -1,0 +1,129 @@
+<div class="patient-page">
+
+  <!-- HEADER -->
+  <header class="patient-header">
+
+  <h1>Hello, Thandi</h1>
+
+  <button
+    class="icon-button notification"
+    type="button"
+    aria-label="Notifications"
+  >
+    <span class="material-icons">
+      notifications
+    </span>
+
+    <span class="notification-dot"></span>
+  </button>
+
+</header>
+
+
+  <!-- UPCOMING APPOINTMENT -->
+  <section class="upcoming-section">
+
+    <h2>Upcoming appointments</h2>
+
+    <div class="appointment-card">
+
+      <div class="appointment-date">
+        <span>May</span>
+        <strong>23</strong>
+      </div>
+
+      <div class="appointment-info">
+        <strong>Dr. Nomsa Dlamini</strong>
+        <span>General Practitioner</span>
+        <small>10:00 AM</small>
+      </div>
+
+      <button class="details-button">
+        View details
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- QUICK ACTIONS -->
+  <section class="quick-actions">
+
+    <h2>Quick actions</h2>
+
+    <div class="action-grid">
+
+      <button routerLink="/patient/book-appointment">
+        <span class="material-icons">
+          calendar_month
+        </span>
+        <span>Book Appointment</span>
+      </button>
+
+      <button>
+        <span class="material-icons">
+          health_and_safety
+        </span>
+        <span>Symptom Checker</span>
+      </button>
+
+      <button>
+        <span class="material-icons">
+          folder
+        </span>
+        <span>My Records</span>
+      </button>
+
+      <button>
+        <span class="material-icons">
+          medication
+        </span>
+        <span>Prescriptions</span>
+      </button>
+
+      <button>
+        <span class="material-icons">
+          chat
+        </span>
+        <span>Messages</span>
+      </button>
+
+      <button>
+        <span class="material-icons">
+          favorite
+        </span>
+        <span>Health Tips</span>
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-navigation">
+
+    <a routerLink="/patient/dashboard" class="active">
+      <span class="material-icons">home</span>
+      <span>Home</span>
+    </a>
+
+    <a>
+      <span class="material-icons">calendar_month</span>
+      <span>Appointments</span>
+    </a>
+
+    <a>
+      <span class="material-icons">description</span>
+      <span>Records</span>
+    </a>
+
+    <a>
+      <span class="material-icons">person</span>
+      <span>Profile</span>
+    </a>
+
+  </nav>
+
+</div>

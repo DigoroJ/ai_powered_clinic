@@ -1,0 +1,120 @@
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Appointments</h1>
+      <p>Manage patient appointments and schedules.</p>
+    </div>
+
+    <button class="primary-button">
+      <span class="material-icons">add</span>
+      New Appointment
+    </button>
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">event</span>
+      </div>
+      <div>
+        <span>Today's Appointments</span>
+        <strong>42</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">pending_actions</span>
+      </div>
+      <div>
+        <span>Pending</span>
+        <strong>8</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div>
+        <span>Completed</span>
+        <strong>31</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <h2>Appointment Schedule</h2>
+
+      <select [(ngModel)]="selectedStatus">
+        <option>All</option>
+        <option>Confirmed</option>
+        <option>Pending</option>
+        <option>Cancelled</option>
+      </select>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let appointment of filteredAppointments">
+
+            <td class="patient-name">
+              {{ appointment.patient }}
+            </td>
+
+            <td>{{ appointment.doctor }}</td>
+            <td>{{ appointment.service }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+
+            <td>
+              <span
+                class="status"
+                [class.pending]="appointment.status === 'Pending'"
+                [class.cancelled]="appointment.status === 'Cancelled'">
+
+                {{ appointment.status }}
+
+              </span>
+            </td>
+
+            <td>
+              <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+              </button>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

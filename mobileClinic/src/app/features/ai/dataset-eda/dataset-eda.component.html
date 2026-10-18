@@ -1,0 +1,124 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Dataset & EDA</h1>
+      <p>Healthcare dataset exploration and data preparation.</p>
+    </div>
+
+    <button class="primary-button">
+      <span class="material-icons">upload_file</span>
+      Upload Dataset
+    </button>
+
+  </div>
+
+  <div class="dataset-banner">
+
+    <span class="material-icons">
+      dataset
+    </span>
+
+    <div>
+      <span>Active Dataset</span>
+      <strong>{{ datasetName }}</strong>
+    </div>
+
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">table_rows</span>
+      </div>
+      <div>
+        <span>Records</span>
+        <strong>{{ datasetStats.records | number }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">view_column</span>
+      </div>
+      <div>
+        <span>Features</span>
+        <strong>{{ datasetStats.features }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">warning</span>
+      </div>
+      <div>
+        <span>Missing Values</span>
+        <strong>{{ datasetStats.missingValues }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">content_copy</span>
+      </div>
+      <div>
+        <span>Duplicates</span>
+        <strong>{{ datasetStats.duplicates }}</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="eda-grid">
+
+    <div class="card">
+
+      <h2>Dataset Columns</h2>
+
+      <div class="column-list">
+
+        <div *ngFor="let column of columns">
+          <span class="material-icons">data_object</span>
+          {{ column }}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Data Preparation</h2>
+
+      <div class="process-step completed">
+        <span class="material-icons">check_circle</span>
+        Data loaded
+      </div>
+
+      <div class="process-step completed">
+        <span class="material-icons">check_circle</span>
+        Missing values analysed
+      </div>
+
+      <div class="process-step completed">
+        <span class="material-icons">check_circle</span>
+        Duplicate records analysed
+      </div>
+
+      <div class="process-step">
+        <span class="material-icons">radio_button_unchecked</span>
+        Feature engineering
+      </div>
+
+      <div class="process-step">
+        <span class="material-icons">radio_button_unchecked</span>
+        Model-ready dataset
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

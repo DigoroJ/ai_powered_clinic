@@ -1,0 +1,117 @@
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Doctors</h1>
+      <p>Manage healthcare providers and availability.</p>
+    </div>
+
+    <button class="primary-button">
+      <span class="material-icons">person_add</span>
+      Add Doctor
+    </button>
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">medical_services</span>
+      </div>
+      <div>
+        <span>Total Doctors</span>
+        <strong>24</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <div>
+        <span>Available</span>
+        <strong>18</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">groups</span>
+      </div>
+      <div>
+        <span>Patients Served</span>
+        <strong>3,482</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <div class="search-box">
+        <span class="material-icons">search</span>
+
+        <input
+          [(ngModel)]="searchTerm"
+          placeholder="Search doctors...">
+      </div>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Phone</th>
+            <th>Patients</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let doctor of filteredDoctors">
+
+            <td class="patient-name">
+              <div class="avatar doctor-avatar">
+                <span class="material-icons">person</span>
+              </div>
+              {{ doctor.name }}
+            </td>
+
+            <td>{{ doctor.specialty }}</td>
+            <td>{{ doctor.phone }}</td>
+            <td>{{ doctor.patients }}</td>
+
+            <td>
+              <span
+                class="status"
+                [class.busy]="doctor.status === 'Busy'">
+                {{ doctor.status }}
+              </span>
+            </td>
+
+            <td>
+              <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+              </button>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

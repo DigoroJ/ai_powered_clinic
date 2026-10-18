@@ -1,0 +1,171 @@
+<div class="booking-page">
+
+  <!-- HEADER -->
+  <header class="booking-header">
+
+    <button
+      class="back-button"
+      routerLink="/patient/dashboard"
+    >
+      <span class="material-icons">
+        arrow_back_ios
+      </span>
+    </button>
+
+    <h1>Book Appointment</h1>
+
+  </header>
+
+
+  <!-- PROGRESS -->
+  <app-appointment-progress
+  [currentStep]="1">
+</app-appointment-progress>
+
+
+  <!-- SERVICES -->
+  <section class="services">
+
+    <h2>Select a service</h2>
+
+
+    <button
+      class="service-card"
+      routerLink="/patient/select-doctor"
+    >
+
+      <div class="service-icon">
+        <span class="material-icons">
+          local_hospital
+        </span>
+      </div>
+
+      <div>
+        <strong>General Consultation</strong>
+        <span>General health check-ups</span>
+      </div>
+
+      <span class="material-icons arrow">
+        chevron_right
+      </span>
+
+    </button>
+
+
+    <button class="service-card">
+
+      <div class="service-icon">
+        <span class="material-icons">
+          child_care
+        </span>
+      </div>
+
+      <div>
+        <strong>Pediatrics</strong>
+        <span>Child Healthcare</span>
+      </div>
+
+      <span class="material-icons arrow">
+        chevron_right
+      </span>
+
+    </button>
+
+
+    <button class="service-card">
+
+      <div class="service-icon">
+        <span class="material-icons">
+          favorite
+        </span>
+      </div>
+
+      <div>
+        <strong>Womans Health</strong>
+        <span>Woman's Health Services</span>
+      </div>
+
+      <span class="material-icons arrow">
+        chevron_right
+      </span>
+
+    </button>
+
+
+    <button class="service-card">
+
+      <div class="service-icon">
+        <span class="material-icons">
+          medical_services
+        </span>
+      </div>
+
+      <div>
+        <strong>Chronic Disease</strong>
+        <span>Diabetes, Hypertension, etc</span>
+      </div>
+
+      <span class="material-icons arrow">
+        chevron_right
+      </span>
+
+    </button>
+
+
+    <button class="service-card">
+
+      <div class="service-icon">
+        <span class="material-icons">
+          psychology
+        </span>
+      </div>
+
+      <div>
+        <strong>Mental Health</strong>
+        <span>Counselling and Support</span>
+      </div>
+
+      <span class="material-icons arrow">
+        chevron_right
+      </span>
+
+    </button>
+
+  </section>
+
+
+  <!-- CONTINUE -->
+  <button
+    class="continue-button"
+    routerLink="/patient/select-doctor"
+  >
+    Continue
+  </button>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-navigation">
+
+    <a class="active">
+      <span class="material-icons">home</span>
+      <span>Home</span>
+    </a>
+
+    <a>
+      <span class="material-icons">calendar_month</span>
+      <span>Appointments</span>
+    </a>
+
+    <a>
+      <span class="material-icons">description</span>
+      <span>Records</span>
+    </a>
+
+    <a>
+      <span class="material-icons">person</span>
+      <span>Profile</span>
+    </a>
+
+  </nav>
+
+</div>

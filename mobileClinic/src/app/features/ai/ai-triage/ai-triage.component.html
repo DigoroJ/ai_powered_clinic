@@ -1,0 +1,137 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>AI Triage</h1>
+      <p>AI-assisted patient prioritisation and service recommendation.</p>
+    </div>
+
+    <div class="ai-status">
+      <span class="status-dot"></span>
+      AI Model Online
+    </div>
+
+  </div>
+
+  <div class="ai-banner">
+
+    <div class="ai-banner-icon">
+      <span class="material-icons">psychology</span>
+    </div>
+
+    <div>
+      <h2>AI Triage Decision Support</h2>
+
+      <p>
+        The system analyses patient symptoms and available clinical
+        information to assist healthcare staff with prioritisation.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">psychology</span>
+      </div>
+
+      <div>
+        <span>Cases Analysed</span>
+        <strong>1,842</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">priority_high</span>
+      </div>
+
+      <div>
+        <span>High Priority</span>
+        <strong>47</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <span class="material-icons">analytics</span>
+      </div>
+
+      <div>
+        <span>Model Accuracy</span>
+        <strong>91.4%</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <h2>Recent AI Triage Cases</h2>
+
+      <select [(ngModel)]="selectedPriority">
+        <option>All</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Symptoms</th>
+            <th>Recommended Service</th>
+            <th>Priority</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let item of filteredCases">
+
+            <td class="patient-name">
+              {{ item.patient }}
+            </td>
+
+            <td>{{ item.symptoms }}</td>
+
+            <td>{{ item.recommendedService }}</td>
+
+            <td>
+              <span
+                class="priority"
+                [class.high]="item.priority === 'High'"
+                [class.medium]="item.priority === 'Medium'">
+
+                {{ item.priority }}
+
+              </span>
+            </td>
+
+            <td>
+              <strong>{{ item.confidence }}%</strong>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
