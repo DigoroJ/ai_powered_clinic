@@ -179,5 +179,9 @@ router.get(
     controller.getDashboardStats
 );
 
+router.get(
+    '/nurses', 
+    controller.getNurses
+);
 
 module.exports = router;

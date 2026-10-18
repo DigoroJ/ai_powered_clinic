@@ -183,6 +183,24 @@ const login = async (req, res) => {
 
 };
 
+const getNurses = async (req, res) => {
+  try {
+    const result = await pool.query(queries.getNurses);
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching nurses:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch nurses'
+    });
+  }
+};
+
 
 // ======================================================
 // PATIENTS
@@ -947,6 +965,7 @@ module.exports = {
     getSymptoms,
 
     // Dashboard
-    getDashboardStats
+    getDashboardStats,
+    getNurses
 
 };

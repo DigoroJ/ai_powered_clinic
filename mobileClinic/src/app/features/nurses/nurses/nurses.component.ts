@@ -1,39 +1,68 @@
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../core/services/api.service';
+
+interface Nurse {
+  id?: string | number;
+  name: string;
+  department: string;
+  phone: string;
+  shift: string;
+  status: string;
+}
 
 @Component({
   selector: 'app-nurses',
   templateUrl: './nurses.component.html',
   styleUrls: ['./nurses.component.scss']
 })
-export class NursesComponent {
+export class NursesComponent implements OnInit {
 
-  nurses = [
-    {
-      name: 'Nurse Patricia Maseko',
-      department: 'General Care',
-      phone: '071 111 2233',
-      shift: 'Morning',
-      status: 'On Duty'
-    },
-    {
-      name: 'Nurse Boitumelo Radebe',
-      department: 'Pediatrics',
-      phone: '072 444 5566',
-      shift: 'Afternoon',
-      status: 'On Duty'
-    },
-    {
-      name: 'Nurse Sarah Nkosi',
-      department: 'Chronic Care',
-      phone: '083 777 8899',
-      shift: 'Morning',
-      status: 'Off Duty'
-    }
-  ];
-
+  nurses: Nurse[] = [];
   searchTerm = '';
+  loading = false;
+  errorMessage = '';
 
-  get filteredNurses() {
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadNurses();
+  }
+
+  loadNurses(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.apiService.getNurses().subscribe({
+      next: (response: any) => {
+        const rows = Array.isArray(response)
+          ? response
+          : response.data ?? [];
+
+        this.nurses = rows.map((item: any) => ({
+          id: item.id,
+          name: item.name ??
+            [item.first_name, item.last_name]
+              .filter(Boolean)
+              .join(' ') ??
+            'Unknown nurse',
+          department: item.department ?? 'Not specified',
+          phone: item.phone ?? item.phone_number ?? 'Not provided',
+          shift: item.shift ?? 'Not assigned',
+          status: item.status ?? 'Not specified'
+        }));
+
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading nurses:', error);
+        this.errorMessage = 'Unable to load nurses. Please try again.';
+        this.loading = false;
+      }
+    });
+  }
+
+  get filteredNurses(): Nurse[] {
     const search = this.searchTerm.toLowerCase().trim();
 
     return this.nurses.filter(nurse =>
@@ -41,5 +70,17 @@ export class NursesComponent {
       nurse.name.toLowerCase().includes(search) ||
       nurse.department.toLowerCase().includes(search)
     );
+  }
+
+  get onDutyCount(): number {
+    return this.nurses.filter(
+      nurse => nurse.status.toLowerCase() === 'on duty'
+    ).length;
+  }
+
+  get shiftsTodayCount(): number {
+    return this.nurses.filter(
+      nurse => nurse.shift.toLowerCase() !== 'not assigned'
+    ).length;
   }
 }

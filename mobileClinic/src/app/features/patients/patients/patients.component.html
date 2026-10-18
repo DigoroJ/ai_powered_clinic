@@ -1,3 +1,4 @@
+
 <div class="page">
 
   <div class="page-header">
@@ -6,12 +7,13 @@
       <p>Manage registered mobile clinic patients.</p>
     </div>
 
-    <button class="primary-button">
+    <button class="primary-button" type="button">
       <span class="material-icons">person_add</span>
       Add Patient
     </button>
   </div>
 
+  <!-- Statistics -->
   <div class="stats-grid">
 
     <div class="stat-card">
@@ -20,7 +22,7 @@
       </div>
       <div>
         <span>Total Patients</span>
-        <strong>1,248</strong>
+        <strong>{{ patients.length }}</strong>
       </div>
     </div>
 
@@ -30,7 +32,7 @@
       </div>
       <div>
         <span>Active Patients</span>
-        <strong>1,102</strong>
+        <strong>{{ activePatientsCount }}</strong>
       </div>
     </div>
 
@@ -40,7 +42,7 @@
       </div>
       <div>
         <span>Follow-ups</span>
-        <strong>86</strong>
+        <strong>{{ followUpCount }}</strong>
       </div>
     </div>
 
@@ -48,29 +50,54 @@
 
   <div class="card">
 
+    <!-- Search and Filter -->
     <div class="toolbar">
 
       <div class="search-box">
         <span class="material-icons">search</span>
-
         <input
           type="text"
           [(ngModel)]="searchTerm"
-          placeholder="Search patients...">
+          placeholder="Search patients..."
+          aria-label="Search patients">
       </div>
 
-      <select [(ngModel)]="selectedStatus">
-        <option>All</option>
-        <option>Active</option>
-        <option>Follow-up</option>
+      <select
+        [(ngModel)]="selectedStatus"
+        aria-label="Filter patients by status">
+        <option value="All">All</option>
+        <option value="Active">Active</option>
+        <option value="Follow-up">Follow-up</option>
       </select>
 
     </div>
 
-    <div class="table-wrapper">
+    <!-- Loading State -->
+    <app-empty-state
+      *ngIf="loading"
+      variant="loading"
+      icon="hourglass_top"
+      title="Loading patients"
+      message="Please wait while we retrieve patient records.">
+    </app-empty-state>
+
+    <!-- Error State -->
+    <app-empty-state
+      *ngIf="!loading && errorMessage"
+      variant="error"
+      icon="cloud_off"
+      title="Unable to load patients"
+      [message]="errorMessage"
+      actionLabel="Try again"
+      (action)="loadPatients()">
+    </app-empty-state>
+
+    <!-- Patients Table -->
+    <div
+      class="table-wrapper"
+      *ngIf="!loading && !errorMessage && filteredPatients.length > 0">
 
       <table>
-
         <thead>
           <tr>
             <th>Patient</th>
@@ -85,12 +112,11 @@
         </thead>
 
         <tbody>
-
           <tr *ngFor="let patient of filteredPatients">
 
             <td class="patient-name">
               <div class="avatar">
-                {{ patient.name.charAt(0) }}
+                {{ patient.name.charAt(0) || '?' }}
               </div>
               {{ patient.name }}
             </td>
@@ -110,18 +136,37 @@
             </td>
 
             <td>
-              <button class="icon-button">
+              <button
+                class="icon-button"
+                type="button"
+                [attr.aria-label]="'Actions for ' + patient.name">
                 <span class="material-icons">more_vert</span>
               </button>
             </td>
 
           </tr>
-
         </tbody>
-
       </table>
 
     </div>
+
+    <!-- Empty State -->
+    <app-empty-state
+      *ngIf="!loading && !errorMessage && patients.length === 0"
+      variant="empty"
+      icon="people"
+      title="No patients registered"
+      message="Patient records will appear here once they are available.">
+    </app-empty-state>
+
+    <!-- Search Has No Matches -->
+    <app-empty-state
+      *ngIf="!loading && !errorMessage && patients.length > 0 && filteredPatients.length === 0"
+      variant="empty"
+      icon="person_search"
+      title="No patients found"
+      message="Try changing your search or status filter.">
+    </app-empty-state>
 
   </div>
 

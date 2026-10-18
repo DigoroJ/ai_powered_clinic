@@ -1,3 +1,4 @@
+
 <div class="page">
 
   <div class="page-header">
@@ -6,12 +7,13 @@
       <p>Manage nursing staff and duty schedules.</p>
     </div>
 
-    <button class="primary-button">
+    <button class="primary-button" type="button">
       <span class="material-icons">person_add</span>
       Add Nurse
     </button>
   </div>
 
+  <!-- Statistics -->
   <div class="stats-grid">
 
     <div class="stat-card">
@@ -20,7 +22,7 @@
       </div>
       <div>
         <span>Total Nurses</span>
-        <strong>38</strong>
+        <strong>{{ nurses.length }}</strong>
       </div>
     </div>
 
@@ -30,7 +32,7 @@
       </div>
       <div>
         <span>On Duty</span>
-        <strong>27</strong>
+        <strong>{{ onDutyCount }}</strong>
       </div>
     </div>
 
@@ -40,7 +42,7 @@
       </div>
       <div>
         <span>Shifts Today</span>
-        <strong>12</strong>
+        <strong>{{ shiftsTodayCount }}</strong>
       </div>
     </div>
 
@@ -48,23 +50,44 @@
 
   <div class="card">
 
+    <!-- Search -->
     <div class="toolbar">
-
       <div class="search-box">
         <span class="material-icons">search</span>
-
         <input
+          type="text"
           [(ngModel)]="searchTerm"
-          placeholder="Search nurses...">
-
+          placeholder="Search nurses..."
+          aria-label="Search nurses">
       </div>
-
     </div>
 
-    <div class="table-wrapper">
+    <!-- Loading State -->
+    <app-empty-state
+      *ngIf="loading"
+      variant="loading"
+      icon="hourglass_top"
+      title="Loading nurses"
+      message="Please wait while we retrieve nursing staff records.">
+    </app-empty-state>
+
+    <!-- Error State -->
+    <app-empty-state
+      *ngIf="!loading && errorMessage"
+      variant="error"
+      icon="cloud_off"
+      title="Unable to load nurses"
+      [message]="errorMessage"
+      actionLabel="Try again"
+      (action)="loadNurses()">
+    </app-empty-state>
+
+    <!-- Nurses Table -->
+    <div
+      class="table-wrapper"
+      *ngIf="!loading && !errorMessage && filteredNurses.length > 0">
 
       <table>
-
         <thead>
           <tr>
             <th>Nurse</th>
@@ -77,12 +100,11 @@
         </thead>
 
         <tbody>
-
           <tr *ngFor="let nurse of filteredNurses">
 
             <td class="patient-name">
               <div class="avatar">
-                {{ nurse.name.charAt(6) }}
+                {{ nurse.name.charAt(0) || '?' }}
               </div>
               {{ nurse.name }}
             </td>
@@ -100,18 +122,37 @@
             </td>
 
             <td>
-              <button class="icon-button">
+              <button
+                class="icon-button"
+                type="button"
+                [attr.aria-label]="'Actions for ' + nurse.name">
                 <span class="material-icons">more_vert</span>
               </button>
             </td>
 
           </tr>
-
         </tbody>
-
       </table>
 
     </div>
+
+    <!-- Empty State -->
+    <app-empty-state
+      *ngIf="!loading && !errorMessage && nurses.length === 0"
+      variant="empty"
+      icon="local_hospital"
+      title="No nurses registered"
+      message="Nursing staff records will appear here once they are available.">
+    </app-empty-state>
+
+    <!-- Search Has No Matches -->
+    <app-empty-state
+      *ngIf="!loading && !errorMessage && nurses.length > 0 && filteredNurses.length === 0"
+      variant="empty"
+      icon="person_search"
+      title="No nurses found"
+      message="Try a different nurse name or department.">
+    </app-empty-state>
 
   </div>
 

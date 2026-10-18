@@ -384,6 +384,20 @@ const upcomingAppointments = `
       AND status = 'Confirmed'
 `;
 
+const getNurses = `
+  SELECT
+    id,
+    first_name,
+    last_name,
+    email,
+    phone,
+    role,
+    created_at
+  FROM users
+  WHERE LOWER(role) = 'nurse'
+  ORDER BY first_name, last_name;
+`;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -398,6 +412,7 @@ module.exports = {
     getUserById,
     getUserByEmail,
     deleteUser,
+    getNurses,
 
     getDoctors,
     getDoctorById,

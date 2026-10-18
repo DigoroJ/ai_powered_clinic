@@ -7,13 +7,15 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     SidebarComponent,
     LoadingComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    EmptyStateComponent
   ],
 
   imports: [
@@ -29,7 +31,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     NavbarComponent,
     SidebarComponent,
     LoadingComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    EmptyStateComponent
   ]
 })
 export class SharedModule {}
