@@ -9,6 +9,7 @@ import { DemandPredictionComponent } from './demand-prediction/demand-prediction
 import { AiTriageComponent } from './ai-triage/ai-triage.component';
 import { AiAnalyticsComponent } from './ai-analytics/ai-analytics.component';
 import { DatasetEdaComponent } from './dataset-eda/dataset-eda.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { DatasetEdaComponent } from './dataset-eda/dataset-eda.component';
 
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ],
 
   exports: [

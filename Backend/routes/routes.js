@@ -184,4 +184,14 @@ router.get(
     controller.getNurses
 );
 
+router.get(
+    '/dataset/eda/current', 
+    controller.getCurrentDatasetEda
+);
+
+router.get(
+    '/ai/analytics', 
+    controller.getAiAnalytics
+);
+
 module.exports = router;

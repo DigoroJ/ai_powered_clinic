@@ -65,4 +65,17 @@ export class ApiService {
       `${this.apiUrl}/nurses`
     );
   }
+
+  getCurrentDatasetEda() {
+    return this.http.get<any>(
+      `${this.apiUrl}/dataset/eda/current`
+    );
+  }
+
+  getAiAnalytics() {
+    return this.http.get<any>(
+      `${this.apiUrl}/ai/analytics`
+    );
+  }
+
 }

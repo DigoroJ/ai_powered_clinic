@@ -1,36 +1,63 @@
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../core/services/api.service';
+
+interface ModelResult {
+  name: string;
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1Score: number;
+}
 
 @Component({
   selector: 'app-ai-analytics',
   templateUrl: './ai-analytics.component.html',
   styleUrls: ['./ai-analytics.component.scss']
 })
-export class AiAnalyticsComponent {
+export class AiAnalyticsComponent implements OnInit {
 
-  models = [
-    {
-      name: 'Random Forest',
-      accuracy: 94.2,
-      precision: 93.6,
-      recall: 92.8
-    },
-    {
-      name: 'Decision Tree',
-      accuracy: 89.7,
-      precision: 88.9,
-      recall: 87.5
-    },
-    {
-      name: 'Logistic Regression',
-      accuracy: 87.4,
-      precision: 86.8,
-      recall: 85.9
-    },
-    {
-      name: 'Support Vector Machine',
-      accuracy: 91.8,
-      precision: 91.1,
-      recall: 90.2
-    }
-  ];
+  loading = false;
+  errorMessage = '';
+
+  bestModel = '';
+  bestAccuracy: number | null = null;
+  trainingRecords: number | null = null;
+  predictions: number | null = null;
+
+  models: ModelResult[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadAnalytics();
+  }
+
+  loadAnalytics(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.apiService.getAiAnalytics().subscribe({
+      next: (response: any) => {
+        const data = response.data;
+
+        this.bestModel = data.bestModel;
+        this.bestAccuracy = data.bestAccuracy;
+        this.trainingRecords = data.trainingRecords;
+        this.predictions = data.predictions;
+        this.models = data.models ?? [];
+
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading AI analytics:', error);
+
+        this.errorMessage =
+          error.error?.message ||
+          'Unable to load AI analytics. Please try again.';
+
+        this.loading = false;
+      }
+    });
+  }
 }

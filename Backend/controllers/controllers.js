@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const queries = require('../queries/queries');
+const fs = require('fs');
+const path = require('path');
 
 
 // ======================================================
@@ -917,6 +919,147 @@ const getDashboardStats = async (req, res) => {
 };
 
 
+const getCurrentDatasetEda = async (req, res) => {
+  try {
+    // Call the Python Flask EDA service
+    const response = await fetch(
+      'http://127.0.0.1:5001/dataset/eda/current',
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json'
+        },
+        signal: AbortSignal.timeout(10000)
+      }
+    );
+
+    // Read the Python response
+    const result = await response.json();
+
+    // Handle errors returned by Python
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        message:
+          result.error || 'Failed to analyse the current dataset.'
+      });
+    }
+
+    // Return EDA results to the Angular frontend
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error(
+      'Error retrieving current dataset EDA:',
+      error
+    );
+
+    // Handle Python service connection errors and timeouts
+    return res.status(503).json({
+      success: false,
+      message: 'The Python EDA service is unavailable.',
+      error: error.message
+    });
+  }
+};
+
+const getAiAnalytics = async (req, res) => {
+  try {
+    const modelsDir = path.resolve(
+      __dirname,
+      '../../ML/models'
+    );
+
+    const metadataPath = path.join(
+      modelsDir,
+      'model_metadata.json'
+    );
+
+    const comparisonPath = path.join(
+      modelsDir,
+      'model_comparison.csv'
+    );
+
+    
+    const [metadataContent, comparisonContent] =
+    await Promise.all([
+        fs.promises.readFile(metadataPath, 'utf8'),
+        fs.promises.readFile(comparisonPath, 'utf8')
+    ]);
+
+
+    const metadata = JSON.parse(metadataContent);
+
+    const lines = comparisonContent
+      .trim()
+      .split(/\r?\n/);
+
+    if (lines.length < 2) {
+      return res.status(404).json({
+        success: false,
+        message: 'No model comparison results are available.'
+      });
+    }
+
+    const headers = lines[0].split(',').map(
+      header => header.trim()
+    );
+
+    const models = lines.slice(1).map(line => {
+      const values = line.split(',');
+      const row = {};
+
+      headers.forEach((header, index) => {
+        row[header] = values[index]?.trim();
+      });
+
+      return {
+        name: row.model,
+        accuracy: Number(row.accuracy) * 100,
+        precision: Number(row.precision_macro) * 100,
+        recall: Number(row.recall_macro) * 100,
+        f1Score: Number(row.f1_macro) * 100
+      };
+    });
+
+    const bestModel = models.find(
+      model => model.name === metadata.model_name
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        bestModel: metadata.model_name,
+        bestAccuracy: bestModel?.accuracy ?? null,
+        trainingRecords: null,
+        predictions: null,
+        models
+      }
+    });
+
+  } catch (error) {
+    console.error('Error loading AI analytics:', error);
+
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({
+        success: false,
+        message:
+          'Model results are missing. Run train_model.py first.'
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: 'Unable to retrieve AI analytics.'
+    });
+  }
+};
+
+
+
 // ======================================================
 // EXPORT CONTROLLERS
 // ======================================================
@@ -966,6 +1109,8 @@ module.exports = {
 
     // Dashboard
     getDashboardStats,
-    getNurses
+    getNurses,
+    getCurrentDatasetEda,
+    getAiAnalytics
 
 };
