@@ -213,7 +213,7 @@ const getPatients = async (req, res) => {
     try {
 
         const result = await pool.query(
-            queries.getUsers
+            queries.getPatients
         );
 
         res.json({
@@ -1056,6 +1056,260 @@ const getAiAnalytics = async (req, res) => {
       message: 'Unable to retrieve AI analytics.'
     });
   }
+
+};
+
+
+const predictDisease = async (req, res) => {
+  try {
+    const {
+      patient_id,
+      fever,
+      cough,
+      rash,
+      headache,
+      vomiting,
+      fatigue,
+      sore_throat,
+      breathing_issue,
+      age,
+      gender,
+      temperature,
+      days_symptoms,
+      travel_history
+    } = req.body;
+
+    const patientId = Number(patient_id);
+
+    if (!Number.isSafeInteger(patientId) || patientId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'A valid patient_id is required.'
+      });
+    }
+
+    // Step 1: Get the prediction from Python.
+    const response = await fetch(
+      'http://127.0.0.1:5001/predict',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          fever,
+          cough,
+          rash,
+          headache,
+          vomiting,
+          fatigue,
+          sore_throat,
+          breathing_issue,
+          age,
+          gender,
+          temperature,
+          days_symptoms,
+          travel_history
+        }),
+        signal: AbortSignal.timeout(15000)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        message: result.error || 'Prediction failed.',
+        missingFeatures: result.missingFeatures
+      });
+    }
+
+    // Step 2: Calculate confidence from the probabilities.
+    let confidence = null;
+
+    if (result.probabilities) {
+      const values = Array.isArray(result.probabilities)
+        ? result.probabilities.map(item =>
+            Number(
+              typeof item === 'number'
+                ? item
+                : item.probability ?? item.confidence
+            )
+          )
+        : Object.values(result.probabilities).map(Number);
+
+      const validValues = values.filter(
+        value => Number.isFinite(value)
+      );
+
+      if (validValues.length > 0) {
+        confidence = Math.max(...validValues);
+      }
+    }
+
+    // Step 3: Save the prediction to PostgreSQL.
+    
+    const priority = assessTriagePriority(req.body);
+
+    const savedResult = await pool.query(
+    queries.insertAiPrediction,
+    [
+        Number(req.body.patient_id),
+        result.prediction,
+        confidence,
+        result.model ?? null,
+        result.model_version ?? null,
+        JSON.stringify({
+        fever: req.body.fever,
+        cough: req.body.cough,
+        rash: req.body.rash,
+        headache: req.body.headache,
+        vomiting: req.body.vomiting,
+        fatigue: req.body.fatigue,
+        sore_throat: req.body.sore_throat,
+        breathing_issue: req.body.breathing_issue,
+        age: req.body.age,
+        gender: req.body.gender,
+        temperature: req.body.temperature,
+        days_symptoms: req.body.days_symptoms,
+        travel_history: req.body.travel_history
+        }),
+        priority
+    ]
+    );
+
+    return res.status(201).json({
+    success: true,
+    message: 'Prediction generated and saved successfully.',
+    data: {
+        ...result,
+        patient_id: Number(req.body.patient_id),
+        confidence,
+        priority,
+        savedPrediction: savedResult.rows[0]
+    }
+    });
+
+
+    // Step 4: Return success only after saving.
+    return res.status(201).json({
+      success: true,
+      message: 'Prediction generated and saved successfully.',
+      data: {
+        ...result,
+        patient_id: patientId,
+        confidence,
+        savedPrediction: savedResult.rows[0]
+      }
+    });
+
+  } catch (error) {
+    console.error('AI prediction/database save error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Prediction or database save failed.',
+      error: error.message
+    });
+  }
+};
+
+const getRecentAiTriageCases = async (req, res) => {
+  try {
+    const result = await pool.query(queries.getRecentAiPredictions);
+
+    return res.status(200).json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error retrieving AI triage cases:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Unable to retrieve AI triage cases.'
+    });
+  }
+};
+
+
+const assessTriagePriority = (input) => {
+  const breathingIssue = Number(input.breathing_issue) === 1;
+  const fever = Number(input.fever) === 1;
+  const vomiting = Number(input.vomiting) === 1;
+  const rash = Number(input.rash) === 1;
+
+  if (breathingIssue) {
+    return 'High';
+  }
+
+  if (fever && (vomiting || rash)) {
+    return 'Moderate';
+  }
+
+  return 'Low';
+};
+
+
+const createPatient = async (req, res) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      email,
+      phone
+    } = req.body;
+
+    if (!first_name?.trim() || !last_name?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'First name and last name are required.'
+      });
+    }
+
+    const result = await pool.query(
+      queries.createPatient,
+      [
+        first_name.trim(),
+        last_name.trim(),
+        email?.trim() || null,
+        phone?.trim() || null
+      ]
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'Patient created successfully.',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Patient creation failed:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Unable to create patient.'
+    });
+  }
+};
+
+const getDoctors = async (req, res) => {
+  try {
+    const result = await pool.query(queries.getDoctors);
+
+    return res.status(200).json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error('Error fetching doctors:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve doctors.',
+    });
+  }
 };
 
 
@@ -1111,6 +1365,9 @@ module.exports = {
     getDashboardStats,
     getNurses,
     getCurrentDatasetEda,
-    getAiAnalytics
+    getAiAnalytics,
+    predictDisease,
+    getRecentAiTriageCases,
+    createPatient
 
 };

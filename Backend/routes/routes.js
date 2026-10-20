@@ -37,10 +37,6 @@ router.post('/login', controller.login);
 |--------------------------------------------------------------------------
 */
 
-router.get('/patients', controller.getPatients);
-
-router.get('/patients/:id', controller.getPatientById);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -192,6 +188,30 @@ router.get(
 router.get(
     '/ai/analytics', 
     controller.getAiAnalytics
+);
+
+router.post(
+    '/ai/triage/predict', 
+    controller.predictDisease
+);
+
+router.get(
+    '/patients', 
+    controller.getPatients);
+
+router.get(
+    '/patients/:id', 
+    controller.getPatientById
+);
+
+router.get(
+    '/ai/triage/cases', 
+    controller.getRecentAiTriageCases
+);
+
+router.post(
+    '/patients', 
+    controller.createPatient
 );
 
 module.exports = router;

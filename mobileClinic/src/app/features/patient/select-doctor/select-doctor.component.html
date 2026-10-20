@@ -1,67 +1,42 @@
 <div class="doctor-page">
 
-  <!-- =====================================================
-       HEADER
-  ====================================================== -->
-
+  <!-- HEADER -->
   <header class="doctor-header">
-
     <button
       class="back-button"
       type="button"
       routerLink="/patient/book-appointment"
       aria-label="Go back"
     >
-      <span class="material-icons">
-        arrow_back_ios
-      </span>
+      <span class="material-icons">arrow_back_ios</span>
     </button>
 
     <h1>Select Doctor</h1>
-
     <div class="header-spacer"></div>
-
   </header>
 
-
-  <!-- =====================================================
-       BOOKING PROGRESS
-  ====================================================== -->
-
+  <!-- BOOKING PROGRESS -->
   <app-appointment-progress
     [currentStep]="2">
   </app-appointment-progress>
 
-
-  <!-- =====================================================
-       CONTENT
-  ====================================================== -->
-
+  <!-- CONTENT -->
   <main class="doctor-content">
 
     <!-- SEARCH -->
-
     <div class="search-box">
-
-      <span class="material-icons search-icon">
-        search
-      </span>
+      <span class="material-icons search-icon">search</span>
 
       <input
         type="text"
         placeholder="Search doctor..."
+        aria-label="Search doctors"
         [(ngModel)]="searchTerm"
       />
-
     </div>
 
-
-    <!-- ===================================================
-         FILTERS
-    ==================================================== -->
-
+    <!-- FILTERS -->
     <div class="filters">
-
       <button
         type="button"
         [class.active]="selectedCategory === 'All'"
@@ -93,85 +68,84 @@
       >
         Pediatrics
       </button>
-
     </div>
 
-
-    <!-- ===================================================
-         SELECTED SERVICE
-    ==================================================== -->
-
+    <!-- SELECTED SERVICE -->
     <div
       class="selected-service"
       *ngIf="selectedService"
     >
-
-      <span class="material-icons">
-        medical_services
-      </span>
-
-      <span>
-        {{ selectedService }}
-      </span>
-
+      <span class="material-icons">medical_services</span>
+      <span>{{ selectedService }}</span>
     </div>
 
+    <!-- LOADING -->
+    <div
+      class="loading-message"
+      *ngIf="loading"
+      role="status"
+    >
+      <span class="material-icons">hourglass_empty</span>
+      <p>Loading doctors...</p>
+    </div>
 
-    <!-- ===================================================
-         DOCTOR LIST
-    ==================================================== -->
+    <!-- ERROR -->
+    <div
+      class="error-message"
+      *ngIf="errorMessage"
+      role="alert"
+    >
+      <p>{{ errorMessage }}</p>
 
-    <section class="doctor-list">
+      <button
+        type="button"
+        (click)="loadDoctors()"
+        [disabled]="loading"
+      >
+        Try again
+      </button>
+    </div>
+
+    <!-- DOCTOR LIST -->
+    <section
+      class="doctor-list"
+      *ngIf="!loading && !errorMessage"
+    >
 
       <button
         *ngFor="let doctor of filteredDoctors"
         type="button"
         class="doctor-card"
-        [class.selected]="selectedDoctor === doctor.name"
+        [class.selected]="selectedDoctorId === doctor.id"
+        [disabled]="!doctor.available"
+        [attr.aria-pressed]="selectedDoctorId === doctor.id"
         (click)="selectDoctor(doctor)"
       >
 
-        <!-- DOCTOR AVATAR -->
-
+        <!-- AVATAR -->
         <div class="doctor-avatar">
-
-          <span class="material-icons">
-            person
-          </span>
-
+          <span class="material-icons">person</span>
         </div>
 
-
-        <!-- DOCTOR INFORMATION -->
-
+        <!-- INFORMATION -->
         <div class="doctor-information">
-
-          <h2>
-            {{ doctor.name }}
-          </h2>
-
-          <p>
-            {{ doctor.specialty }}
-          </p>
-
+          <h2>{{ doctor.name }}</h2>
+          <p>{{ doctor.specialty }}</p>
 
           <div class="doctor-meta">
-
-            <span>
-              ⭐ {{ doctor.rating }}
-            </span>
-
-            <span>
-              ◷ {{ doctor.experience }}yrs
-            </span>
-
+            <span>⭐ {{ doctor.rating | number:'1.1-1' }}</span>
+            <span>◷ {{ doctor.experience }} yrs</span>
           </div>
 
+          <p
+            class="doctor-location"
+            *ngIf="doctor.location"
+          >
+            {{ doctor.location }}
+          </p>
         </div>
 
-
         <!-- AVAILABILITY -->
-
         <span
           class="available"
           *ngIf="doctor.available"
@@ -186,51 +160,40 @@
           Unavailable
         </span>
 
-
         <!-- SELECTED CHECK -->
-
         <div
           class="selected-check"
-          *ngIf="selectedDoctor === doctor.name"
+          *ngIf="selectedDoctorId === doctor.id"
         >
-
-          <span class="material-icons">
-            check
-          </span>
-
+          <span class="material-icons">check</span>
         </div>
 
       </button>
 
-
       <!-- NO RESULTS -->
-
       <div
         class="no-results"
         *ngIf="filteredDoctors.length === 0"
       >
+        <span class="material-icons">person_search</span>
+        <p>No doctors found</p>
 
-        <span class="material-icons">
-          person_search
-        </span>
-
-        <p>
-          No doctors found
+        <p *ngIf="searchTerm || selectedCategory !== 'All'">
+          Try changing your search or filter.
         </p>
-
       </div>
 
     </section>
 
-
-    <!-- ===================================================
-         CONTINUE
-    ==================================================== -->
-
+    <!-- CONTINUE -->
     <button
       class="continue-button"
       type="button"
-      [disabled]="!selectedDoctor"
+      [disabled]="
+        selectedDoctorId === null ||
+        loading ||
+        !!errorMessage
+      "
       (click)="continue()"
     >
       Continue
@@ -238,59 +201,34 @@
 
   </main>
 
+  <!-- BOTTOM NAVIGATION -->
+  <nav
+    class="bottom-navigation"
+    aria-label="Patient navigation"
+  >
 
-  <!-- =====================================================
-       BOTTOM NAVIGATION
-  ====================================================== -->
-
-  <nav class="bottom-navigation">
-
-    <a
-      routerLink="/patient/dashboard"
-    >
-      <span class="material-icons">
-        home
-      </span>
-
-      <span>
-        Home
-      </span>
+    <a routerLink="/patient/dashboard">
+      <span class="material-icons">home</span>
+      <span>Home</span>
     </a>
-
 
     <a
       class="active"
       routerLink="/patient/book-appointment"
+      aria-current="page"
     >
-      <span class="material-icons">
-        calendar_month
-      </span>
-
-      <span>
-        Appointments
-      </span>
+      <span class="material-icons">calendar_month</span>
+      <span>Appointments</span>
     </a>
 
-
-    <a>
-      <span class="material-icons">
-        description
-      </span>
-
-      <span>
-        Records
-      </span>
+    <a routerLink="/patient/medical-records">
+      <span class="material-icons">description</span>
+      <span>Records</span>
     </a>
 
-
-    <a>
-      <span class="material-icons">
-        person
-      </span>
-
-      <span>
-        Profile
-      </span>
+    <a routerLink="/patient/profile">
+      <span class="material-icons">person</span>
+      <span>Profile</span>
     </a>
 
   </nav>

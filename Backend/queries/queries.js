@@ -24,6 +24,20 @@ const getUsers = `
     ORDER BY created_at DESC
 `;
 
+const getPatients = `
+    SELECT
+        id,
+        first_name,
+        last_name,
+        email,
+        role,
+        phone,
+        created_at
+    FROM users
+    WHERE LOWER(role) = 'patient'
+    ORDER BY created_at DESC
+`;
+
 const getUserById = `
     SELECT
         id,
@@ -138,25 +152,17 @@ const getAppointments = `
         a.appointment_date,
         a.appointment_time,
         a.status,
-
         u.first_name || ' ' || u.last_name AS patient,
-
         d.name AS doctor,
         d.specialty,
-
         s.name AS service
-
     FROM appointments a
-
     JOIN users u
         ON a.patient_id = u.id
-
     JOIN doctors d
         ON a.doctor_id = d.id
-
     JOIN services s
         ON a.service_id = s.id
-
     ORDER BY a.appointment_date, a.appointment_time
 `;
 
@@ -166,22 +172,15 @@ const getAppointmentsByPatient = `
         a.appointment_date,
         a.appointment_time,
         a.status,
-
         d.name AS doctor,
         d.specialty,
-
         s.name AS service
-
     FROM appointments a
-
     JOIN doctors d
         ON a.doctor_id = d.id
-
     JOIN services s
         ON a.service_id = s.id
-
     WHERE a.patient_id = $1
-
     ORDER BY
         a.appointment_date DESC,
         a.appointment_time DESC
@@ -193,20 +192,14 @@ const getAppointmentById = `
         a.appointment_date,
         a.appointment_time,
         a.status,
-
         d.name AS doctor,
         d.specialty,
-
         s.name AS service
-
     FROM appointments a
-
     JOIN doctors d
         ON a.doctor_id = d.id
-
     JOIN services s
         ON a.service_id = s.id
-
     WHERE a.id = $1
 `;
 
@@ -231,17 +224,12 @@ const getMedicalRecords = `
         mr.diagnosis,
         mr.notes,
         mr.treatment,
-
         d.name AS doctor,
         d.specialty
-
     FROM medical_records mr
-
     JOIN doctors d
         ON mr.doctor_id = d.id
-
     WHERE mr.patient_id = $1
-
     ORDER BY mr.visit_date DESC
 `;
 
@@ -250,12 +238,9 @@ const getMedicalRecordById = `
         mr.*,
         d.name AS doctor,
         d.specialty
-
     FROM medical_records mr
-
     JOIN doctors d
         ON mr.doctor_id = d.id
-
     WHERE mr.id = $1
 `;
 
@@ -275,16 +260,11 @@ const getPrescriptions = `
         p.start_date,
         p.end_date,
         p.status,
-
         d.name AS doctor
-
     FROM prescriptions p
-
     JOIN doctors d
         ON p.doctor_id = d.id
-
     WHERE p.patient_id = $1
-
     ORDER BY p.start_date DESC
 `;
 
@@ -364,7 +344,7 @@ const getSymptomsByIds = `
 const totalPatients = `
     SELECT COUNT(*) AS total
     FROM users
-    WHERE role = 'patient'
+    WHERE LOWER(role) = 'patient'
 `;
 
 const totalDoctors = `
@@ -385,18 +365,70 @@ const upcomingAppointments = `
 `;
 
 const getNurses = `
+    SELECT
+        id,
+        first_name,
+        last_name,
+        email,
+        phone,
+        role,
+        created_at
+    FROM users
+    WHERE LOWER(role) = 'nurse'
+    ORDER BY first_name, last_name
+`;
+
+
+/*
+|--------------------------------------------------------------------------
+| AI TRIAGE QUERIES
+|--------------------------------------------------------------------------
+*/
+
+const insertAiPrediction = `
+  INSERT INTO public.ai_predictions (
+    patient_id,
+    predicted_disease,
+    confidence,
+    model_name,
+    model_version,
+    input_data,
+    priority,
+    created_at
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+  RETURNING *;
+`;
+
+const getRecentAiPredictions = `
   SELECT
     id,
+    patient_id,
+    predicted_disease,
+    confidence,
+    model_name,
+    model_version,
+    input_data,
+    priority,
+    created_at
+  FROM public.ai_predictions
+  ORDER BY created_at DESC
+  LIMIT 20
+`;
+
+const createPatient = `
+  INSERT INTO users (
     first_name,
     last_name,
     email,
     phone,
-    role,
-    created_at
-  FROM users
-  WHERE LOWER(role) = 'nurse'
-  ORDER BY first_name, last_name;
+    role
+  )
+  VALUES ($1, $2, $3, $4, 'patient')
+  RETURNING id, first_name, last_name, email, phone, role;
 `;
+
+
 
 
 /*
@@ -406,43 +438,60 @@ const getNurses = `
 */
 
 module.exports = {
-
+    // Users
     addUser,
     getUsers,
+    getPatients,
     getUserById,
     getUserByEmail,
     deleteUser,
+
+    // Nurses
     getNurses,
 
+    // Doctors
     getDoctors,
     getDoctorById,
     getDoctorsByService,
 
+    // Services
     getServices,
     getServiceById,
 
+    // Appointments
     createAppointment,
     getAppointments,
     getAppointmentsByPatient,
     getAppointmentById,
     cancelAppointment,
 
+    // Medical records
     getMedicalRecords,
     getMedicalRecordById,
 
+    // Prescriptions
     getPrescriptions,
 
+    // Messages
     getMessages,
     createMessage,
     markMessageRead,
 
+    // Health tips
     getHealthTips,
 
+    // Symptoms
     getSymptoms,
     getSymptomsByIds,
 
+    // Dashboard
     totalPatients,
     totalDoctors,
     totalAppointments,
-    upcomingAppointments
+    upcomingAppointments,
+    createPatient,
+
+    // AI triage
+    insertAiPrediction,
+    getRecentAiPredictions,
 };

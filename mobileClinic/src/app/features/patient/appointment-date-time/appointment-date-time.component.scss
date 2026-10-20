@@ -5,14 +5,12 @@
 .date-time-page {
   width: 100%;
   min-height: 100vh;
-
+  padding-bottom: 100px;
   background: #f7f9fc;
-
-  padding-bottom: 95px;
-
+  color: #151b2b;
+  font-family: inherit;
   box-sizing: border-box;
 }
-
 
 /* =========================================================
    HEADER
@@ -20,41 +18,27 @@
 
 .date-time-header {
   width: 100%;
-  max-width: 1100px;
-
+  max-width: 1500px;
   height: 75px;
-
   margin: 0 auto;
-
+  padding: 0 40px;
   display: grid;
-
   grid-template-columns: 45px 1fr 45px;
-
   align-items: center;
-
-  padding: 0 20px;
-
   box-sizing: border-box;
 }
 
 .date-time-header h1 {
   margin: 0;
-
   text-align: center;
-
   color: #151b2b;
-
-  font-size: 24px;
-
+  font-size: 25px;
   font-weight: 700;
-
-  line-height: 1.2;
 }
 
 .header-spacer {
   width: 45px;
 }
-
 
 /* =========================================================
    BACK BUTTON
@@ -63,234 +47,161 @@
 .back-button {
   width: 40px;
   height: 40px;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 0;
-
   border: none;
-
   border-radius: 50%;
-
   background: transparent;
-
   color: #151b2b;
-
   cursor: pointer;
-
   transition: background 0.2s ease;
 }
 
 .back-button:hover {
-  background: #edf0f5;
+  background: #e9edf3;
 }
 
 .back-button .material-icons {
-  font-size: 25px;
+  font-size: 24px;
 }
-
 
 /* =========================================================
    MAIN CONTENT
 ========================================================= */
 
 .date-time-content {
-  width: calc(100% - 40px);
-
-  max-width: 1100px;
-
-  margin: 0 auto;
-
+  width: calc(100% - 64px);
+  max-width: 1450px;
+  margin: 20px auto 0;
   box-sizing: border-box;
 }
 
-
 /* =========================================================
-   INSTRUCTION BOX
+   INSTRUCTION
 ========================================================= */
 
 .instruction-box {
-  width: 100%;
-
-  min-height: 52px;
-
   display: flex;
-
   align-items: center;
-  justify-content: center;
-
-  gap: 9px;
-
-  margin-bottom: 25px;
-
-  padding: 10px 15px;
-
-  border: 1px solid #aeb6c4;
-
-  border-radius: 11px;
-
-  background: #e9edf3;
-
-  color: #202633;
-
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 14px 18px;
+  border: 1px solid #dce7fb;
+  border-radius: 12px;
+  background: #edf3ff;
+  color: #2864dc;
   font-size: 14px;
-
-  box-sizing: border-box;
+  font-weight: 600;
 }
 
 .instruction-box .material-icons {
-  color: #2864dc;
-
-  font-size: 20px;
+  font-size: 22px;
 }
 
-
 /* =========================================================
-   DESKTOP DATE + TIME LAYOUT
+   CALENDAR + TIME LAYOUT
 ========================================================= */
 
 .booking-selection {
   width: 100%;
-
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 1.15fr)
-    minmax(0, 0.85fr);
-
-  gap: 32px;
-
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 30px;
   align-items: start;
 }
 
-
 /* =========================================================
-   DATE / TIME SECTIONS
+   SECTIONS AND HEADINGS
+   Headings remain outside the white cards.
 ========================================================= */
 
 .calendar-section,
 .time-section {
-  width: 100%;
-
   min-width: 0;
-
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
-
-/* =========================================================
-   SECTION TITLES
-========================================================= */
-
 .section-title {
-  height: 62px;
-
+  min-height: 78px;
+  margin-bottom: 16px;
   display: flex;
-
   align-items: flex-start;
+}
 
-  margin-bottom: 14px;
-
-  box-sizing: border-box;
+.section-title > div {
+  min-width: 0;
 }
 
 .section-title h2 {
-  margin: 0;
-
+  margin: 0 0 8px;
   color: #151b2b;
-
-  font-size: 26px;
-
-  font-weight: 700;
-
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
   line-height: 1.2;
+  font-weight: 700;
 }
 
 .section-title p {
-  margin: 6px 0 0;
-
-  color: #858b96;
-
-  font-size: 14px;
-
-  line-height: 1.4;
+  margin: 0;
+  color: #8991a0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-
 /* =========================================================
-   CALENDAR CARD
+   CALENDAR CARD - REDUCED SIZE
 ========================================================= */
 
 .calendar-card {
   width: 100%;
-
-  min-height: 530px;
-
-  padding: 28px;
-
-  box-sizing: border-box;
-
-  border-radius: 20px;
-
+  max-width: 760px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 22px;
   background: #ffffff;
-
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 32px rgba(24, 39, 75, 0.06);
+  box-sizing: border-box;
 }
 
-
 /* =========================================================
-   CALENDAR HEADER
+   MONTH HEADER
 ========================================================= */
 
 .calendar-header {
-  width: 100%;
-
-  display: flex;
-
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
   align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 25px;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .calendar-header h3 {
   margin: 0;
-
-  color: #151b2b;
-
-  font-size: 25px;
-
-  font-weight: 700;
-
   text-align: center;
+  color: #151b2b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 700;
 }
 
 .month-button {
-  width: 40px;
-  height: 40px;
-
+  width: 38px;
+  height: 38px;
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 0;
-
   border: none;
-
   border-radius: 50%;
-
   background: transparent;
-
   color: #2864dc;
-
   cursor: pointer;
-
   transition: background 0.2s ease;
 }
 
@@ -299,409 +210,279 @@
 }
 
 .month-button:disabled {
-  color: #c7ccd4;
-
+  color: #c7cdd6;
   cursor: not-allowed;
 }
 
 .month-button .material-icons {
-  font-size: 25px;
+  font-size: 28px;
 }
-
 
 /* =========================================================
    WEEKDAYS
 ========================================================= */
 
 .weekdays {
-  width: 100%;
-
   display: grid;
-
   grid-template-columns: repeat(7, minmax(0, 1fr));
-
-  margin-bottom: 12px;
-
-  text-align: center;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .weekdays span {
-  color: #596170;
-
+  min-width: 0;
+  text-align: center;
+  color: #596273;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 13px;
-
-  font-weight: 600;
+  font-weight: 700;
 }
-
 
 /* =========================================================
    CALENDAR GRID
 ========================================================= */
 
 .calendar-grid {
-  width: 100%;
-
   display: grid;
-
-  grid-template-columns:
-    repeat(7, minmax(0, 1fr));
-
-  gap: 10px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px 5px;
 }
 
-
 /* =========================================================
-   CALENDAR DAY
+   CALENDAR DAYS
 ========================================================= */
 
 .calendar-day {
   width: 100%;
-
-  aspect-ratio: 1;
-
+  max-width: 58px;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  justify-self: center;
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   padding: 0;
-
-  border: none;
-
+  border: 2px solid transparent;
   border-radius: 50%;
-
-  background: #e8ebef;
-
-  color: #202633;
-
-  font-size: 15px;
-
+  background: #e9ebef;
+  color: #252d3b;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-
+  box-sizing: border-box;
   transition:
     background 0.2s ease,
     color 0.2s ease,
-    transform 0.15s ease;
+    border-color 0.2s ease;
 }
 
-
-/* Empty calendar cells */
+.calendar-day:hover:not(:disabled):not(.selected):not(.empty) {
+  border-color: #2864dc;
+  background: #edf3ff;
+}
 
 .calendar-day.empty {
   visibility: hidden;
-
-  background: transparent;
-
-  cursor: default;
+  pointer-events: none;
 }
-
-
-/* Past / unavailable dates */
 
 .calendar-day.disabled {
   background: #f0f1f3;
-
-  color: #c3c7cd;
-
+  color: #c1c6ce;
   cursor: not-allowed;
 }
 
-
-/* Available date hover */
-
-.calendar-day:not(.disabled):not(.empty):hover {
-  background: #dce8ff;
-
-  color: #2864dc;
-
-  transform: scale(1.05);
-}
-
-
-/* Selected date */
-
 .calendar-day.selected {
+  border-color: #2864dc;
   background: #2864dc;
-
   color: #ffffff;
-
   font-weight: 700;
 }
 
+.calendar-day:focus-visible,
+.month-button:focus-visible,
+.time-slot:focus-visible,
+.continue-button:focus-visible {
+  outline: 3px solid rgba(40, 100, 220, 0.3);
+  outline-offset: 3px;
+}
 
 /* =========================================================
-   AVAILABLE TIME CARD
+   AVAILABLE TIME SECTION
 ========================================================= */
 
 .time-section {
-  min-height: 530px;
-
-  padding: 28px;
-
-  border-radius: 20px;
-
-  background: #ffffff;
-
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.08);
-
-  box-sizing: border-box;
-
-  transition:
-    background 0.2s ease,
-    opacity 0.2s ease;
+  position: relative;
+  opacity: 1;
 }
-
 
 /* =========================================================
-   DISABLED TIME SECTION
-========================================================= */
-
-.time-section.disabled-section {
-  background: #eef0f3;
-
-  opacity: 0.9;
-}
-
-.time-section.disabled-section .section-title h2 {
-  color: #858b94;
-}
-
-.time-section.disabled-section .section-title p {
-  color: #a2a7ae;
-}
-
-
-/* =========================================================
-   TIME LOCK MESSAGE
-========================================================= */
-
-.time-disabled-message {
-  min-height: 360px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  text-align: center;
-
-  color: #a0a5ad;
-}
-
-.time-disabled-message .material-icons {
-  width: 52px;
-  height: 52px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 14px;
-
-  border-radius: 50%;
-
-  background: #d9dde2;
-
-  color: #8e949d;
-
-  font-size: 23px;
-}
-
-.time-disabled-message p {
-  margin: 0;
-
-  color: #9298a1;
-
-  font-size: 13px;
-
-  line-height: 1.5;
-}
-
-
-/* =========================================================
-   TIME SLOTS
+   TIME SLOTS CARD
 ========================================================= */
 
 .time-slots {
   width: 100%;
-
+  min-width: 0;
   display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 14px;
+  padding: 24px 20px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 10px 32px rgba(24, 39, 75, 0.06);
+  box-sizing: border-box;
 }
 
-
 /* =========================================================
-   TIME SLOT
+   INDIVIDUAL TIME SLOT
 ========================================================= */
 
 .time-slot {
   width: 100%;
-
-  min-height: 58px;
-
+  min-width: 0;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 10px;
   border: 2px solid #2864dc;
-
-  border-radius: 30px;
-
+  border-radius: 999px;
   background: #ffffff;
-
   color: #2864dc;
-
-  font-size: 15px;
-
-  font-weight: 600;
-
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-
   box-sizing: border-box;
-
   transition:
     background 0.2s ease,
     color 0.2s ease,
-    transform 0.15s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.time-slot:hover {
+.time-slot:hover:not(.selected) {
   background: #edf3ff;
-
   transform: translateY(-1px);
 }
 
 .time-slot.selected {
+  border-color: #2864dc;
   background: #2864dc;
-
   color: #ffffff;
+  box-shadow: 0 5px 14px rgba(40, 100, 220, 0.2);
 }
 
+/* =========================================================
+   LOCKED TIME STATE
+========================================================= */
+
+.time-disabled-message {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 18px;
+  border: 1px dashed #d4dbe7;
+  border-radius: 24px;
+  background: #ffffff;
+  color: #8991a0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.time-disabled-message .material-icons {
+  margin-bottom: 12px;
+  color: #aab4c5;
+  font-size: 38px;
+}
+
+.time-disabled-message p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
 
 /* =========================================================
-   SELECTED TIME
+   SELECTED APPOINTMENT
 ========================================================= */
 
 .selected-time {
   display: flex;
-
-  align-items: center;
-
+  align-items: flex-start;
   gap: 12px;
-
-  margin-top: 20px;
-
+  margin-top: 16px;
   padding: 14px;
-
-  border-radius: 12px;
-
-  background: #edf5ff;
-
-  box-sizing: border-box;
+  border: 1px solid #cfe3d6;
+  border-radius: 14px;
+  background: #f0faf3;
+  color: #246b40;
 }
 
 .selected-time > .material-icons {
-  width: 40px;
-  height: 40px;
-
-  min-width: 40px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 9px;
-
-  background: #2864dc;
-
-  color: #ffffff;
-
-  font-size: 19px;
+  margin-top: 2px;
+  font-size: 24px;
 }
 
 .selected-time > div {
+  min-width: 0;
   display: flex;
-
   flex-direction: column;
-
-  gap: 3px;
+  gap: 5px;
 }
 
 .selected-time small {
-  color: #888;
-
-  font-size: 10px;
+  color: #4b8060;
+  font-size: 12px;
 }
 
 .selected-time strong {
-  color: #151b2b;
-
-  font-size: 13px;
+  color: #205c36;
+  font-size: 14px;
 }
 
 .selected-time span {
-  color: #2864dc;
-
-  font-size: 12px;
-
+  font-size: 14px;
   font-weight: 600;
 }
 
-
 /* =========================================================
-   CONTINUE BUTTON
+   CONTINUE BUTTON - CENTRED
 ========================================================= */
 
 .continue-button {
   width: 100%;
-
-  max-width: 500px;
-
-  height: 52px;
-
+  max-width: 360px;
+  min-height: 52px;
   display: block;
-
-  margin: 28px auto 0;
-
+  margin: 30px auto 0;
+  padding: 13px 24px;
   border: none;
-
-  border-radius: 10px;
-
+  border-radius: 11px;
   background: #2864dc;
-
   color: #ffffff;
-
-  font-size: 15px;
-
-  font-weight: 600;
-
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-
+  box-sizing: border-box;
   transition:
     background 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .continue-button:hover:not(:disabled) {
   background: #1f56c5;
-
   transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(40, 100, 220, 0.2);
 }
 
 .continue-button:disabled {
-  background: #b9c4d8;
-
-  color: #f5f6f8;
-
+  background: #b8c5df;
+  color: #f3f5f9;
   cursor: not-allowed;
+  box-shadow: none;
 }
-
 
 /* =========================================================
    BOTTOM NAVIGATION
@@ -709,53 +490,34 @@
 
 .bottom-navigation {
   position: fixed;
-
   left: 0;
   bottom: 0;
-
-  width: 100%;
-
-  height: 72px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  align-items: center;
-
-  background: #ffffff;
-
-  border-top: 1px solid #e5e7eb;
-
-  box-shadow:
-    0 -3px 12px rgba(0, 0, 0, 0.06);
-
   z-index: 1000;
+  width: 100%;
+  height: 72px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .bottom-navigation a {
   height: 100%;
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 4px;
-
   color: #9ca3af;
-
   text-decoration: none;
-
   font-size: 11px;
-
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
+.bottom-navigation a:hover,
 .bottom-navigation a.active {
   color: #2864dc;
 }
@@ -764,283 +526,45 @@
   font-size: 22px;
 }
 
-
-/* =========================================================
-   LARGE DESKTOP
-========================================================= */
-
-@media (min-width: 1200px) {
-
-  .date-time-content {
-    max-width: 1100px;
-  }
-
-  .booking-selection {
-    grid-template-columns:
-      minmax(0, 1.1fr)
-      minmax(0, 0.9fr);
-
-    gap: 36px;
-  }
-
-  .calendar-card,
-  .time-section {
-    min-height: 530px;
-  }
-
-  .calendar-grid {
-    gap: 12px;
-  }
-
-  .calendar-day {
-    font-size: 16px;
-  }
-
-  .time-slots {
-    gap: 17px;
-  }
-
-  .time-slot {
-    min-height: 60px;
-
-    font-size: 16px;
-  }
-}
-
-
-/* =========================================================
-   MEDIUM DESKTOP / TABLET
-========================================================= */
-
-@media (max-width: 1000px) {
-
-  .date-time-content {
-    width: calc(100% - 30px);
-  }
-
-  .booking-selection {
-    grid-template-columns:
-      minmax(0, 1fr)
-      minmax(0, 1fr);
-
-    gap: 20px;
-  }
-
-  .calendar-card,
-  .time-section {
-    min-height: 480px;
-  }
-
-  .calendar-card {
-    padding: 20px;
-  }
-
-  .time-section {
-    padding: 20px;
-  }
-
-  .calendar-grid {
-    gap: 7px;
-  }
-
-  .calendar-day {
-    font-size: 12px;
-  }
-
-  .time-slots {
-    gap: 10px;
-  }
-
-  .time-slot {
-    min-height: 50px;
-
-    font-size: 13px;
-  }
-
-}
-
-
 /* =========================================================
    TABLET
 ========================================================= */
 
-@media (max-width: 850px) {
+@media (max-width: 1000px) {
+  .date-time-content {
+    width: calc(100% - 40px);
+  }
 
   .booking-selection {
-    grid-template-columns: 1fr;
-
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
     gap: 22px;
   }
 
-  .calendar-card,
-  .time-section {
-    min-height: auto;
-  }
-
-  .time-disabled-message {
-    min-height: 180px;
-  }
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 768px) {
-
-  .date-time-page {
-    padding-bottom: 90px;
-  }
-
-
-  /* HEADER */
-
-  .date-time-header {
-    height: 68px;
-
-    padding: 0 15px;
-  }
-
-  .date-time-header h1 {
-    font-size: 21px;
-  }
-
-
-  /* CONTENT */
-
-  .date-time-content {
-    width: calc(100% - 30px);
-  }
-
-
-  /* INSTRUCTION */
-
-  .instruction-box {
-    min-height: 48px;
-
-    margin-bottom: 20px;
-
-    font-size: 12px;
-  }
-
-
-  /* SECTION TITLES */
-
   .section-title {
-    height: auto;
-
-    margin-bottom: 12px;
+    min-height: 72px;
+    margin-bottom: 14px;
   }
 
   .section-title h2 {
-    font-size: 20px;
+    font-size: 28px;
   }
 
   .section-title p {
-    font-size: 11px;
+    font-size: 14px;
   }
 
-
-  /* CALENDAR */
-
   .calendar-card {
-    padding: 15px;
-
-    border-radius: 15px;
+    padding: 17px;
   }
 
   .calendar-header {
-    margin-bottom: 18px;
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    gap: 4px;
+    margin-bottom: 17px;
   }
 
   .calendar-header h3 {
-    font-size: 18px;
-  }
-
-  .calendar-grid {
-    gap: 6px;
-  }
-
-  .calendar-day {
-    font-size: 11px;
-  }
-
-
-  /* TIME */
-
-  .time-section {
-    padding: 15px;
-
-    border-radius: 15px;
-  }
-
-  .time-disabled-message {
-    min-height: 160px;
-  }
-
-  .time-slots {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 8px;
-  }
-
-  .time-slot {
-    min-height: 44px;
-
-    font-size: 12px;
-  }
-
-
-  /* CONTINUE */
-
-  .continue-button {
-    height: 50px;
-
-    margin-top: 20px;
-  }
-
-}
-
-
-/* =========================================================
-   SMALL PHONES
-========================================================= */
-
-@media (max-width: 550px) {
-
-  .date-time-header {
-    padding: 0 10px;
-  }
-
-  .date-time-header h1 {
-    font-size: 19px;
-  }
-
-  .date-time-content {
-    width: calc(100% - 24px);
-  }
-
-
-  /* INSTRUCTION */
-
-  .instruction-box {
-    font-size: 11px;
-
-    padding: 8px 10px;
-  }
-
-
-  /* CALENDAR */
-
-  .calendar-card {
-    padding: 12px;
-  }
-
-  .calendar-header h3 {
-    font-size: 16px;
+    font-size: 22px;
   }
 
   .month-button {
@@ -1048,98 +572,253 @@
     height: 32px;
   }
 
-  .month-button .material-icons {
-    font-size: 21px;
-  }
-
-  .weekdays span {
-    font-size: 9px;
-  }
-
   .calendar-grid {
-    gap: 5px;
+    gap: 7px 4px;
   }
 
   .calendar-day {
-    font-size: 10px;
+    max-width: 48px;
+    font-size: 13px;
   }
 
-
-  /* TIME */
-
-  .time-section {
-    padding: 12px;
+  .weekdays span {
+    font-size: 12px;
   }
 
   .time-slots {
-    gap: 7px;
+    padding: 20px 15px;
+    gap: 12px 10px;
   }
 
   .time-slot {
-    min-height: 40px;
+    min-height: 50px;
+    font-size: 14px;
+  }
+}
 
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+  .date-time-page {
+    padding-bottom: 90px;
+  }
+
+  .date-time-header {
+    height: 68px;
+    padding: 0 15px;
+  }
+
+  .date-time-header h1 {
+    font-size: 21px;
+  }
+
+  .date-time-content {
+    width: calc(100% - 30px);
+    margin-top: 12px;
+  }
+
+  .instruction-box {
+    margin-bottom: 24px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .booking-selection {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .section-title {
+    min-height: auto;
+    margin-bottom: 13px;
+  }
+
+  .section-title h2 {
+    margin-bottom: 7px;
+    font-size: 26px;
+  }
+
+  .section-title p {
+    font-size: 14px;
+  }
+
+  .calendar-card {
+    max-width: 520px;
+    padding: 18px 12px;
+    border-radius: 20px;
+  }
+
+  .calendar-header {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    margin-bottom: 18px;
+  }
+
+  .calendar-header h3 {
+    font-size: 23px;
+  }
+
+  .month-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .weekdays {
+    margin-bottom: 10px;
+  }
+
+  .weekdays span {
+    font-size: 12px;
+  }
+
+  .calendar-grid {
+    gap: 7px 4px;
+  }
+
+  .calendar-day {
+    max-width: 44px;
+    font-size: 12px;
+  }
+
+  .time-slots {
+    padding: 18px 14px;
+    gap: 12px 10px;
+    border-radius: 20px;
+  }
+
+  .time-slot {
+    min-height: 50px;
+    font-size: 15px;
+  }
+
+  .time-disabled-message {
+    min-height: 180px;
+    border-radius: 20px;
+  }
+
+  .selected-time {
+    margin-top: 13px;
+  }
+
+  .continue-button {
+    max-width: 360px;
+    margin: 25px auto 0;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 420px) {
+  .date-time-header {
+    padding: 0 10px;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+  }
+
+  .date-time-header h1 {
+    font-size: 18px;
+  }
+
+  .date-time-content {
+    width: calc(100% - 24px);
+  }
+
+  .section-title h2 {
+    font-size: 24px;
+  }
+
+  .section-title p {
+    font-size: 13px;
+  }
+
+  .calendar-card {
+    padding: 15px 8px;
+  }
+
+  .calendar-header {
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    gap: 3px;
+  }
+
+  .calendar-header h3 {
+    font-size: 20px;
+  }
+
+  .month-button {
+    width: 30px;
+    height: 30px;
+  }
+
+  .calendar-grid {
+    gap: 6px 2px;
+  }
+
+  .weekdays {
+    gap: 2px;
+  }
+
+  .weekdays span {
     font-size: 10px;
   }
 
-
-  /* SELECTED TIME */
-
-  .selected-time {
-    padding: 10px;
+  .calendar-day {
+    max-width: 40px;
+    font-size: 11px;
   }
 
-  .selected-time > .material-icons {
-    width: 34px;
-    height: 34px;
-
-    min-width: 34px;
-
-    font-size: 17px;
+  .time-slots {
+    padding: 15px 10px;
+    gap: 10px 8px;
   }
 
+  .time-slot {
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .continue-button {
+    max-width: 100%;
+    min-height: 49px;
+    font-size: 15px;
+  }
+
+  .bottom-navigation {
+    height: 66px;
+  }
 }
-
 
 /* =========================================================
    VERY SMALL PHONES
 ========================================================= */
 
-@media (max-width: 380px) {
-
-  .date-time-header h1 {
-    font-size: 17px;
-  }
-
-  .date-time-content {
-    width: calc(100% - 20px);
-  }
-
+@media (max-width: 340px) {
   .calendar-card {
-    padding: 9px;
+    padding: 12px 5px;
+  }
+
+  .calendar-header h3 {
+    font-size: 18px;
   }
 
   .calendar-grid {
-    gap: 4px;
+    gap: 5px 1px;
   }
 
   .calendar-day {
-    font-size: 9px;
+    max-width: 35px;
+    font-size: 10px;
   }
 
-  .time-section {
-    padding: 10px;
+  .time-slots {
+    padding: 12px 7px;
+    gap: 9px 6px;
   }
 
   .time-slot {
-    min-height: 37px;
-
-    font-size: 9px;
+    min-height: 43px;
+    padding: 6px 4px;
+    font-size: 12px;
   }
-
-  .continue-button {
-    height: 48px;
-
-    font-size: 14px;
-  }
-
 }

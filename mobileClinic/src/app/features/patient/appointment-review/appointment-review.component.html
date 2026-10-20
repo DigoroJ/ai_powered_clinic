@@ -288,6 +288,10 @@
 
     </div>
 
+    <div class="error-message" *ngIf="errorMessage" role="alert">
+      <span class="material-icons">error_outline</span>
+      {{ errorMessage }}
+    </div>
 
     <!-- ==========================================
          CONFIRM BUTTON

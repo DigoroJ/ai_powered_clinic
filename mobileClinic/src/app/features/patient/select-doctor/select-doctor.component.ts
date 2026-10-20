@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppointmentService } from '../appointment.service';
+import { ApiService } from '../../../core/services/api.service';
 
 interface Doctor {
+  id: number;
   name: string;
   specialty: string;
   rating: number;
   experience: number;
   available: boolean;
+  location?: string;
 }
 
 @Component({
@@ -17,221 +20,226 @@ interface Doctor {
 })
 export class SelectDoctorComponent implements OnInit {
 
-  // =====================================================
-  // BOOKING DATA
-  // =====================================================
+  // Booking data
+  selectedService = '';
+  selectedDoctor = '';
+  selectedDoctorSpecialty = '';
+  selectedDoctorId: number | null = null;
 
-  selectedService: string = '';
+  // Search and filters
+  searchTerm = '';
+  selectedCategory = 'All';
 
-  selectedDoctor: string = '';
-
-  selectedDoctorSpecialty: string = '';
-
-
-  // =====================================================
-  // SEARCH / FILTER
-  // =====================================================
-
-  searchTerm: string = '';
-
-  selectedCategory: string = 'All';
-
-
-  // =====================================================
-  // DOCTORS
-  // =====================================================
-
-  doctors: Doctor[] = [
-
-    {
-      name: 'Dr Nomsa Dlamini',
-      specialty: 'General Practitioner',
-      rating: 4.9,
-      experience: 8,
-      available: true
-    },
-
-    {
-      name: 'Dr Aisha Patel',
-      specialty: 'Pediatrician',
-      rating: 4.9,
-      experience: 10,
-      available: true
-    },
-
-    {
-      name: 'Dr Thabo Mokoena',
-      specialty: 'Cardiologist',
-      rating: 4.8,
-      experience: 12,
-      available: true
-    }
-
-  ];
-
-
-  // =====================================================
-  // CONSTRUCTOR
-  // =====================================================
+  // Doctors and API state
+  doctors: Doctor[] = [];
+  loading = false;
+  errorMessage = '';
 
   constructor(
     private router: Router,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private apiService: ApiService
   ) {}
 
-
-  // =====================================================
-  // INITIALISE
-  // =====================================================
-
   ngOnInit(): void {
+    const appointment = this.appointmentService.getAppointment();
 
-    const appointment =
-      this.appointmentService.getAppointment();
+    // Restore existing booking data
+    this.selectedService = appointment.service || '';
+    this.selectedDoctor = appointment.doctor || '';
+    this.selectedDoctorSpecialty = appointment.specialty || '';
+    this.selectedDoctorId = appointment.doctorId ?? null;
 
-    if (appointment) {
-
-      this.selectedService =
-        appointment.service || '';
-
-      this.selectedDoctor =
-        appointment.doctor || '';
-
-      this.selectedDoctorSpecialty =
-        appointment.specialty || '';
-
-    }
-
+    this.loadDoctors();
   }
 
+  // =====================================================
+  // LOAD DOCTORS FROM BACKEND
+  // =====================================================
+
+  loadDoctors(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.apiService.getDoctors().subscribe({
+      next: (response: any) => {
+        if (!response || !Array.isArray(response.data)) {
+          this.doctors = [];
+          this.errorMessage = 'Unexpected response from the server.';
+          this.loading = false;
+          return;
+        }
+
+        this.doctors = response.data.map((item: any): Doctor => ({
+          id: Number(item.id),
+          name: item.name,
+          specialty: item.specialty,
+          rating: Number(item.rating) || 0,
+          experience: Number(item.experience) || 0,
+          available:
+            item.available === true ||
+            item.available === 'true',
+          location: item.location
+        }));
+
+        // Restore the selected doctor using its ID first.
+        const appointment = this.appointmentService.getAppointment();
+
+        const existingDoctor = this.doctors.find(
+          doctor =>
+            doctor.id === Number(appointment.doctorId)
+        ) || this.doctors.find(
+          doctor => doctor.name === appointment.doctor
+        );
+
+        if (existingDoctor) {
+          this.selectedDoctor = existingDoctor.name;
+          this.selectedDoctorSpecialty = existingDoctor.specialty;
+          this.selectedDoctorId = existingDoctor.id;
+
+          // Ensure the doctor ID is saved in the service.
+          this.appointmentService.setDoctor(
+            existingDoctor.name,
+            existingDoctor.specialty,
+            existingDoctor.id
+          );
+        }
+
+        this.loading = false;
+      },
+
+      error: (error: any) => {
+        console.error('Failed to load doctors:', error);
+
+        this.errorMessage =
+          'Unable to load doctors. Check that your backend is running.';
+
+        this.loading = false;
+      }
+    });
+  }
 
   // =====================================================
   // SELECT DOCTOR
   // =====================================================
 
   selectDoctor(doctor: Doctor): void {
-
-    if (!doctor.available) {
+    if (!doctor.available || !Number.isFinite(doctor.id)) {
       return;
     }
 
     this.selectedDoctor = doctor.name;
+    this.selectedDoctorSpecialty = doctor.specialty;
+    this.selectedDoctorId = doctor.id;
+    this.errorMessage = '';
 
-    this.selectedDoctorSpecialty =
-      doctor.specialty;
-
+    // Save the name, specialty AND database ID.
     this.appointmentService.setDoctor(
       doctor.name,
-      doctor.specialty
+      doctor.specialty,
+      doctor.id
     );
 
+    console.log('Selected doctor:', doctor.name);
+    console.log('Selected doctor ID:', doctor.id);
+    console.log(
+      'Saved appointment:',
+      this.appointmentService.getAppointment()
+    );
   }
 
-
   // =====================================================
-  // CONTINUE TO DATE & TIME
+  // CONTINUE TO DATE AND TIME
   // =====================================================
 
   continue(): void {
-
-    // Do not continue without selecting a doctor
-    if (!this.selectedDoctor) {
+    if (this.loading) {
       return;
     }
 
-    // Make sure the doctor information is saved
-    const selectedDoctor =
-      this.doctors.find(
-        doctor =>
-          doctor.name === this.selectedDoctor
-      );
-
-    if (selectedDoctor) {
-
-      this.appointmentService.setDoctor(
-        selectedDoctor.name,
-        selectedDoctor.specialty
-      );
-
+    if (this.selectedDoctorId === null) {
+      this.errorMessage = 'Please select a doctor first.';
+      return;
     }
 
-    // Go to the next step
+    const doctor = this.doctors.find(
+      item => item.id === this.selectedDoctorId
+    );
+
+    if (!doctor || !doctor.available) {
+      this.errorMessage =
+        'Please select a valid, available doctor.';
+      return;
+    }
+
+    // Save the doctor ID again before navigating.
+    this.appointmentService.setDoctor(
+      doctor.name,
+      doctor.specialty,
+      doctor.id
+    );
+
+    const appointment = this.appointmentService.getAppointment();
+
+    console.log('Continuing with appointment:', appointment);
+
+    if (!appointment.serviceId) {
+      this.errorMessage =
+        'The service ID is missing. Return to the service selection page and select a service again.';
+      return;
+    }
+
     this.router.navigate([
       '/patient/appointment-date-time'
-    ]);
+    ]).then(success => {
+      if (!success) {
+        this.errorMessage =
+          'Navigation failed. Check your patient routes.';
+      }
+    }).catch(error => {
+      console.error('Navigation error:', error);
 
+      this.errorMessage =
+        'Unable to open the date and time page.';
+    });
   }
 
-
   // =====================================================
-  // SEARCH + CATEGORY FILTER
+  // SEARCH AND CATEGORY FILTERING
   // =====================================================
 
   get filteredDoctors(): Doctor[] {
+    const search = this.searchTerm.trim().toLowerCase();
 
-    const search =
-      this.searchTerm
-        .trim()
-        .toLowerCase();
+    return this.doctors.filter(doctor => {
+      const matchesSearch =
+        !search ||
+        doctor.name.toLowerCase().includes(search) ||
+        doctor.specialty.toLowerCase().includes(search);
 
-    return this.doctors.filter(
-      doctor => {
+      let matchesCategory = true;
 
-        // Search by name or specialty
-        const matchesSearch =
-          !search ||
-          doctor.name
-            .toLowerCase()
-            .includes(search) ||
-          doctor.specialty
-            .toLowerCase()
-            .includes(search);
+      switch (this.selectedCategory) {
+        case 'General':
+          matchesCategory =
+            doctor.specialty.toLowerCase()
+              .includes('general practitioner');
+          break;
 
+        case 'Dentist':
+          matchesCategory =
+            doctor.specialty.toLowerCase()
+              .includes('dentist');
+          break;
 
-        // Category filter
-        let matchesCategory = true;
-
-        if (this.selectedCategory !== 'All') {
-
-          switch (this.selectedCategory) {
-
-            case 'GP':
-              matchesCategory =
-                doctor.specialty
-                  .toLowerCase()
-                  .includes('general practitioner');
-              break;
-
-            case 'Dentist':
-              matchesCategory =
-                doctor.specialty
-                  .toLowerCase()
-                  .includes('dentist');
-              break;
-
-            case 'Pediatrics':
-              matchesCategory =
-                doctor.specialty
-                  .toLowerCase()
-                  .includes('pediatric');
-              break;
-
-            default:
-              matchesCategory = true;
-
-          }
-
-        }
-
-
-        return (
-          matchesSearch &&
-          matchesCategory
-        );
-
+        case 'Pediatric':
+          matchesCategory =
+            doctor.specialty.toLowerCase()
+              .includes('pediatric');
+          break;
       }
-    );
 
+      return matchesSearch && matchesCategory;
+    });
   }
-
 }
