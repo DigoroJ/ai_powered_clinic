@@ -1,0 +1,166 @@
+<div class="dashboard-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">CLINICAL WORKSPACE</p>
+      <h1>Doctor Dashboard</h1>
+      <p class="page-subtitle">
+        Overview of appointments and patient consultations.
+      </p>
+    </div>
+
+    <button class="btn btn-primary" type="button" (click)="retry()">
+      <span class="refresh-icon">↻</span>
+      Refresh
+    </button>
+  </header>
+
+  <section class="stats-grid" aria-label="Appointment statistics">
+    <article class="stat-card">
+      <div class="stat-icon icon-blue">▦</div>
+      <div class="stat-content">
+        <span class="stat-label">Total appointments</span>
+        <strong class="stat-value">{{ stats.total }}</strong>
+        <span class="stat-note">Appointments returned by the API</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-purple">◷</div>
+      <div class="stat-content">
+        <span class="stat-label">Today's appointments</span>
+        <strong class="stat-value">{{ stats.today }}</strong>
+        <span class="stat-note">Scheduled for today</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-orange">◌</div>
+      <div class="stat-content">
+        <span class="stat-label">Pending</span>
+        <strong class="stat-value">{{ stats.pending }}</strong>
+        <span class="stat-note">Awaiting action</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-green">✓</div>
+      <div class="stat-content">
+        <span class="stat-label">Completed</span>
+        <strong class="stat-value">{{ stats.completed }}</strong>
+        <span class="stat-note">Completed appointments</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="content-card">
+    <div class="section-header">
+      <div>
+        <h2>Appointment Overview</h2>
+        <p>Search and review appointment records.</p>
+      </div>
+      <span class="record-count">
+        {{ filteredAppointments.length }} records
+      </span>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="Search patient, service or appointment ID"
+          aria-label="Search appointments"
+        />
+      </div>
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="applyFilters()"
+        aria-label="Filter by appointment status"
+      >
+        <option value="All">All statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading" class="state-message">
+      <span class="spinner"></span>
+      <p>Loading appointments...</p>
+    </div>
+
+    <div *ngIf="!loading && errorMessage" class="state-message error-state">
+      <h3>Unable to load appointments</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="retry()">Try again</button>
+    </div>
+
+    <div
+      *ngIf="!loading && !errorMessage && filteredAppointments.length === 0"
+      class="state-message"
+    >
+      <div class="empty-icon">▦</div>
+      <h3>No appointments found</h3>
+      <p>Try changing your search or status filter.</p>
+    </div>
+
+    <div
+      class="table-wrapper"
+      *ngIf="!loading && !errorMessage && filteredAppointments.length > 0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th>Appointment</th>
+            <th>Patient</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let appointment of filteredAppointments">
+            <td>
+              <span class="appointment-id">
+                #{{ appointment.id }}
+              </span>
+            </td>
+
+            <td>
+              <div class="patient-cell">
+                <span class="patient-avatar">
+                  {{ getPatientName(appointment).charAt(0).toUpperCase() }}
+                </span>
+                <span>{{ getPatientName(appointment) }}</span>
+              </div>
+            </td>
+
+            <td>{{ appointment.service_name || 'General consultation' }}</td>
+            <td>{{ formatDisplayDate(appointment.appointment_date) }}</td>
+            <td>{{ appointment.appointment_time || '—' }}</td>
+
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(appointment.status)"
+              >
+                {{ appointment.status || 'Unknown' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="dashboard-footnote">
+    Patient information is confidential. Access and actions must be authorised
+    by the backend.
+  </p>
+</div>

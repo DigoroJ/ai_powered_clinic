@@ -2,23 +2,20 @@
 
   <!-- LOGO -->
   <div class="logo">
-
     <div class="logo-icon">
-      <span class="material-icons">
-        local_hospital
-      </span>
+      <span class="material-icons">local_hospital</span>
     </div>
 
-    <span class="logo-text">
-      Mobile Clinic
-    </span>
-
+    <span class="logo-text">Mobile Clinic</span>
   </div>
 
+  <!-- ROLE -->
+  <div class="role-label">
+    {{ currentRole | titlecase }} Workspace
+  </div>
 
   <!-- NAVIGATION -->
   <nav class="navigation">
-
     <a
       *ngFor="let item of menuItems"
       [routerLink]="item.route"
@@ -26,7 +23,6 @@
       [routerLinkActiveOptions]="{ exact: true }"
       class="nav-item"
     >
-
       <span class="material-icons nav-icon">
         {{ item.icon }}
       </span>
@@ -34,25 +30,15 @@
       <span class="nav-label">
         {{ item.label }}
       </span>
-
     </a>
-
   </nav>
-
 
   <!-- SIDEBAR FOOTER -->
   <div class="sidebar-footer">
-
     <div class="system-status">
-
       <span class="status-dot"></span>
-
-      <span>
-        System Online
-      </span>
-
+      <span>System Online</span>
     </div>
-
   </div>
 
 </aside>

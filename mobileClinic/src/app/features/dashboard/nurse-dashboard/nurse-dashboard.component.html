@@ -1,0 +1,179 @@
+<div class="dashboard-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">CLINICAL WORKSPACE</p>
+      <h1>Nurse Dashboard</h1>
+      <p class="page-subtitle">
+        Monitor the patient queue and appointment activity.
+      </p>
+    </div>
+
+    <button class="btn btn-primary" type="button" (click)="retry()">
+      <span class="refresh-icon">↻</span>
+      Refresh queue
+    </button>
+  </header>
+
+  <section class="stats-grid" aria-label="Patient queue statistics">
+    <article class="stat-card">
+      <div class="stat-icon icon-blue">▦</div>
+      <div class="stat-content">
+        <span class="stat-label">Total appointments</span>
+        <strong class="stat-value">{{ stats.total }}</strong>
+        <span class="stat-note">Appointments returned by the API</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-orange">◷</div>
+      <div class="stat-content">
+        <span class="stat-label">Waiting / confirmed</span>
+        <strong class="stat-value">{{ stats.waiting }}</strong>
+        <span class="stat-note">Awaiting patient care</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-purple">◌</div>
+      <div class="stat-content">
+        <span class="stat-label">In progress</span>
+        <strong class="stat-value">{{ stats.inProgress }}</strong>
+        <span class="stat-note">Currently being attended to</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon icon-green">✓</div>
+      <div class="stat-content">
+        <span class="stat-label">Completed</span>
+        <strong class="stat-value">{{ stats.completed }}</strong>
+        <span class="stat-note">Completed appointments</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="content-card">
+    <div class="section-header">
+      <div>
+        <h2>Patient Queue</h2>
+        <p>Review appointment details and current status.</p>
+      </div>
+
+      <span class="record-count">
+        {{ filteredQueue.length }} records
+      </span>
+    </div>
+
+    <div class="queue-notice">
+      <span class="notice-icon">i</span>
+      <p>
+        Use this queue to identify patients who may need attention.
+        Clinical assessment and record updates must be performed through
+        authorised clinical workflows.
+      </p>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="Search patient, service or appointment ID"
+          aria-label="Search patient queue"
+        />
+      </div>
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="applyFilters()"
+        aria-label="Filter patient queue by status"
+      >
+        <option value="All">All statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="In Progress">In progress</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading" class="state-message">
+      <span class="spinner"></span>
+      <p>Loading patient queue...</p>
+    </div>
+
+    <div *ngIf="!loading && errorMessage" class="state-message error-state">
+      <h3>Unable to load patient queue</h3>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" type="button" (click)="retry()">
+        Try again
+      </button>
+    </div>
+
+    <div
+      *ngIf="!loading && !errorMessage && filteredQueue.length === 0"
+      class="state-message"
+    >
+      <div class="empty-icon">▦</div>
+      <h3>No patients found</h3>
+      <p>There are no appointments matching the current filters.</p>
+    </div>
+
+    <div
+      class="table-wrapper"
+      *ngIf="!loading && !errorMessage && filteredQueue.length > 0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th>Queue ID</th>
+            <th>Patient</th>
+            <th>Service</th>
+            <th>Appointment date</th>
+            <th>Time</th>
+            <th>Doctor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let appointment of filteredQueue">
+            <td>
+              <span class="appointment-id">#{{ appointment.id }}</span>
+            </td>
+
+            <td>
+              <div class="patient-cell">
+                <span class="patient-avatar">
+                  {{ getPatientName(appointment).charAt(0).toUpperCase() }}
+                </span>
+                <span>{{ getPatientName(appointment) }}</span>
+              </div>
+            </td>
+
+            <td>{{ appointment.service_name || 'General consultation' }}</td>
+            <td>{{ formatDisplayDate(appointment.appointment_date) }}</td>
+            <td>{{ appointment.appointment_time || '—' }}</td>
+            <td>{{ appointment.doctor_name || 'Not assigned' }}</td>
+
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(appointment.status)"
+              >
+                {{ appointment.status || 'Unknown' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="dashboard-footnote">
+    Patient information is confidential. Only access records required for
+    your authorised duties.
+  </p>
+</div>

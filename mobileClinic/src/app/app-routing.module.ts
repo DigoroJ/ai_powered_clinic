@@ -22,6 +22,8 @@ import { AiTriageComponent } from './features/ai/ai-triage/ai-triage.component';
 import { DatasetEdaComponent } from './features/ai/dataset-eda/dataset-eda.component';
 import { ReportsComponent } from './features/report/reports/reports.component';
 import { SettingsComponent } from './features/settings/settings/settings.component';
+import { DoctorDashboardComponent } from './features/dashboard/doctor-dashboard/doctor-dashboard.component';
+import { NurseDashboardComponent } from './features/dashboard/nurse-dashboard/nurse-dashboard.component';
 
 
 
@@ -140,7 +142,61 @@ const routes: Routes = [
     }
 
   ]
-}
+},
+
+// DOCTOR APPLICATION
+{
+  path: 'doctor',
+  component: MainLayoutComponent,
+  children: [
+    {
+      path: 'dashboard',
+      component: DoctorDashboardComponent
+    },
+    {
+      path: 'appointments',
+      component: AppointmentsComponent
+    },
+    {
+      path: 'patients',
+      component: PatientsComponent
+    },
+    {
+      path: 'medical-records',
+      component: MedicalRecordsComponent
+    },
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+  ]
+},
+
+// NURSE APPLICATION
+{
+  path: 'nurse',
+  component: MainLayoutComponent,
+  children: [
+    {
+      path: 'dashboard',
+      component: NurseDashboardComponent
+    },
+    {
+      path: 'appointments',
+      component: AppointmentsComponent
+    },
+    {
+      path: 'patients',
+      component: PatientsComponent
+    },
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+  ]
+},
 
 ];
 
