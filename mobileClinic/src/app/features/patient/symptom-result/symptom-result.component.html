@@ -1,288 +1,256 @@
+
 <div class="results-page">
 
   <!-- Page Header -->
-  <div class="page-header">
-
-    <button class="back-btn" routerLink="/symptom-checker" aria-label="Go back">
-      <span>‹</span>
+  <header class="page-header">
+    <button
+      type="button"
+      class="back-btn"
+      aria-label="Return to symptom checker"
+      (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
     </button>
 
     <div class="header-content">
       <span class="eyebrow">SYMPTOM CHECKER</span>
-      <h1>AI Assessment Results</h1>
+      <h1>Assessment Results</h1>
       <p>
-        Your symptoms have been analyzed. Review the assessment
-        and recommended next steps.
+        Review your answers and the recommended next steps.
       </p>
     </div>
+  </header>
 
-  </div>
+  <main class="results-container">
 
-
-  <!-- Main Content -->
-  <div class="results-container">
-
-    <!-- Assessment Summary -->
-    <section class="assessment-card">
-
-      <div class="assessment-left">
-
-        <div class="success-icon">
-          ✓
-        </div>
-
-        <div>
-          <span class="status-label">ASSESSMENT COMPLETE</span>
-
-          <h2>Your assessment is ready</h2>
-
-          <p>
-            The AI has reviewed the symptoms you provided
-            and identified the following possibilities.
-          </p>
-        </div>
-
-      </div>
-
-
-      <div class="confidence-box">
-
-        <span>AI CONFIDENCE</span>
-
-        <strong>87%</strong>
-
-        <div class="confidence-bar">
-          <div class="confidence-progress"></div>
-        </div>
-
-      </div>
-
+    <!-- Error / missing assessment -->
+    <section class="content-card error-card" *ngIf="errorMessage">
+      <span class="material-icons">info</span>
+      <h2>Assessment unavailable</h2>
+      <p>{{ errorMessage }}</p>
+      <button class="primary-btn" type="button" (click)="restartChecker()">
+        Start Symptom Checker
+      </button>
     </section>
 
+    <ng-container *ngIf="assessment as result">
 
-    <!-- Two Column Layout -->
-    <div class="results-grid">
-
-      <!-- Left Column -->
-      <div class="results-column">
-
-        <!-- Possible Conditions -->
-        <section class="content-card">
-
-          <div class="card-heading">
-            <div>
-              <span class="section-label">ASSESSMENT</span>
-              <h2>Possible Conditions</h2>
-            </div>
-          </div>
-
-
-          <div class="condition-list">
-
-            <div class="condition-item">
-
-              <div class="condition-number">01</div>
-
-              <div class="condition-info">
-                <h3>Influenza</h3>
-                <p>
-                  Symptoms are highly consistent with influenza.
-                </p>
-              </div>
-
-              <span class="severity high">
-                High
-              </span>
-
-            </div>
-
-
-            <div class="condition-item">
-
-              <div class="condition-number">02</div>
-
-              <div class="condition-info">
-                <h3>Common Cold</h3>
-                <p>
-                  Some of your symptoms may also indicate a common cold.
-                </p>
-              </div>
-
-              <span class="severity medium">
-                Medium
-              </span>
-
-            </div>
-
-
-            <div class="condition-item">
-
-              <div class="condition-number">03</div>
-
-              <div class="condition-info">
-                <h3>COVID-19</h3>
-                <p>
-                  Consider testing if symptoms continue or worsen.
-                </p>
-              </div>
-
-              <span class="severity low">
-                Low
-              </span>
-
-            </div>
-
-          </div>
-
-        </section>
-
-
-        <!-- Recommended Actions -->
-        <section class="content-card">
-
-          <div class="card-heading">
-            <span class="section-label">NEXT STEPS</span>
-            <h2>Recommended Actions</h2>
-          </div>
-
-
-          <div class="recommendations">
-
-            <div class="recommendation-item">
-
-              <div class="recommendation-icon">
-                💧
-              </div>
-
-              <div>
-                <h3>Stay hydrated</h3>
-                <p>
-                  Drink plenty of water and other fluids throughout the day.
-                </p>
-              </div>
-
-            </div>
-
-
-            <div class="recommendation-item">
-
-              <div class="recommendation-icon">
-                🛌
-              </div>
-
-              <div>
-                <h3>Get plenty of rest</h3>
-                <p>
-                  Give your body enough time to recover.
-                </p>
-              </div>
-
-            </div>
-
-
-            <div class="recommendation-item">
-
-              <div class="recommendation-icon">
-                👨‍⚕️
-              </div>
-
-              <div>
-                <h3>Consider seeing a doctor</h3>
-                <p>
-                  A healthcare professional can provide a proper diagnosis.
-                </p>
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-      </div>
-
-
-      <!-- Right Column -->
-      <div class="results-column">
-
-        <!-- Urgent Care -->
-        <section class="warning-card">
-
-          <div class="warning-icon">
-            !
+      <!-- Assessment Summary -->
+      <section class="assessment-card">
+        <div class="assessment-left">
+          <div class="success-icon">
+            <span class="material-icons">assignment_turned_in</span>
           </div>
 
           <div>
-            <span class="warning-label">IMPORTANT</span>
-
-            <h2>When to seek urgent care</h2>
-
+            <span class="status-label">ANSWERS RECORDED</span>
+            <h2>Your assessment summary is ready</h2>
             <p>
-              Seek immediate medical attention if you experience
-              difficulty breathing, severe chest pain, confusion,
-              fainting, or symptoms that suddenly become worse.
+              Your submitted information is shown below.
+              This summary is not a medical diagnosis.
             </p>
           </div>
+        </div>
 
-        </section>
+        <div class="assessment-status">
+          <span class="material-icons">fact_check</span>
+          <span>Assessment saved</span>
+          <small *ngIf="result.created_at">
+            {{ formatDate(result.created_at) }}
+          </small>
+        </div>
+      </section>
 
+      <!-- Results Grid -->
+      <div class="results-grid">
 
-        <!-- Appointment CTA -->
-        <section class="action-card">
+        <!-- Left Column -->
+        <div class="results-column">
 
-          <div class="action-icon">
-            🩺
-          </div>
+          <!-- Reported Symptoms -->
+          <section class="content-card">
+            <div class="card-heading">
+              <div>
+                <span class="section-label">YOUR RESPONSES</span>
+                <h2>Reported Symptoms</h2>
+              </div>
 
-          <h2>Speak to a healthcare professional</h2>
+              <span class="count-badge">
+                {{ result.symptoms.length }}
+              </span>
+            </div>
 
-          <p>
-            An AI assessment cannot replace a professional medical
-            diagnosis. Book an appointment if you would like
-            your symptoms assessed by a doctor.
-          </p>
+            <div class="symptom-tags">
+              <span class="symptom-tag" *ngFor="let symptom of result.symptoms">
+                <span class="material-icons">check_circle</span>
+                {{ symptom }}
+              </span>
+            </div>
 
-          <button
-            class="primary-btn"
-            routerLink="/appointments">
+            <div class="detail-list">
+              <div class="detail-row">
+                <span>Duration</span>
+                <strong>{{ durationLabel }}</strong>
+              </div>
 
-            Book an Appointment
+              <div class="detail-row">
+                <span>Severity reported</span>
+                <strong
+                  class="severity-value"
+                  [class.mild]="result.severity === 'mild'"
+                  [class.moderate]="result.severity === 'moderate'"
+                  [class.severe]="result.severity === 'severe'">
+                  {{ severityLabel }}
+                </strong>
+              </div>
 
-            <span>→</span>
+              <div class="detail-row" *ngIf="result.id">
+                <span>Assessment reference</span>
+                <strong>#{{ result.id }}</strong>
+              </div>
+            </div>
 
-          </button>
+            <div class="additional-details"
+              *ngIf="result.additional_details">
+              <h3>Additional information</h3>
+              <p>{{ result.additional_details }}</p>
+            </div>
+          </section>
 
-          <button
-            class="secondary-btn"
-            routerLink="/chat">
+          <!-- Recommended Next Steps -->
+          <section class="content-card">
+            <div class="card-heading">
+              <div>
+                <span class="section-label">NEXT STEPS</span>
+                <h2>What you can do</h2>
+              </div>
+            </div>
 
-            Chat with AI
+            <div class="recommendations">
 
-          </button>
+              <div class="recommendation-item">
+                <div class="recommendation-icon blue">
+                  <span class="material-icons">medical_services</span>
+                </div>
+                <div>
+                  <h3>Consider a clinical assessment</h3>
+                  <p>
+                    A healthcare professional can review your symptoms,
+                    ask follow-up questions, and determine what care you need.
+                  </p>
+                </div>
+              </div>
 
-        </section>
+              <div class="recommendation-item">
+                <div class="recommendation-icon green">
+                  <span class="material-icons">water_drop</span>
+                </div>
+                <div>
+                  <h3>Look after yourself</h3>
+                  <p>
+                    Rest and drink fluids if appropriate for your condition.
+                    Seek professional advice if you are unsure what is safe.
+                  </p>
+                </div>
+              </div>
 
+              <div class="recommendation-item">
+                <div class="recommendation-icon amber">
+                  <span class="material-icons">monitor_heart</span>
+                </div>
+                <div>
+                  <h3>Monitor changes</h3>
+                  <p>
+                    If your symptoms worsen, persist, or concern you,
+                    seek medical advice rather than relying on this summary.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column -->
+        <div class="results-column">
+
+          <!-- Safety Warning -->
+          <section class="warning-card">
+            <div class="warning-icon">
+              <span class="material-icons">priority_high</span>
+            </div>
+
+            <div>
+              <span class="warning-label">IMPORTANT</span>
+              <h2>When to seek emergency help</h2>
+              <p>
+                Seek emergency help immediately for severe difficulty
+                breathing, severe or persistent chest pain, fainting,
+                new confusion, sudden weakness, or difficulty speaking.
+              </p>
+            </div>
+          </section>
+
+          <!-- Appointment CTA -->
+          <section class="action-card">
+            <div class="action-icon">
+              <span class="material-icons">calendar_month</span>
+            </div>
+
+            <h2>Speak to a healthcare professional</h2>
+
+            <p>
+              Arrange an appointment if you would like your symptoms
+              assessed by a qualified healthcare professional.
+            </p>
+
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="bookAppointment()">
+              Book an Appointment
+              <span class="material-icons">arrow_forward</span>
+            </button>
+
+            <button
+              type="button"
+              class="secondary-btn"
+              (click)="restartChecker()">
+              Check Symptoms Again
+            </button>
+          </section>
+
+          <!-- Assessment Information -->
+          <section class="content-card information-card">
+            <span class="material-icons info-icon">info</span>
+            <div>
+              <h3>About these results</h3>
+              <p>
+                This page summarises the information you entered.
+                It does not identify possible diseases, calculate AI
+                confidence, or rule out serious conditions.
+              </p>
+            </div>
+          </section>
+
+        </div>
       </div>
 
-    </div>
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <span class="material-icons">verified_user</span>
+        <p>
+          This information is for general guidance only and does not
+          replace professional medical advice, diagnosis, or treatment.
+        </p>
+      </div>
 
+    </ng-container>
 
-    <!-- Disclaimer -->
-    <div class="disclaimer">
+  </main>
 
-      <span>ⓘ</span>
-
-      <p>
-        This assessment is for informational purposes only and does
-        not replace professional medical advice, diagnosis or treatment.
-      </p>
-
-    </div>
-
-  </div>
-
- <!-- Bottom Navigation -->
-<nav class="mobile-bottom-nav">
+  <!-- Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
 
     <a routerLink="/patient/dashboard">
       <span class="material-icons">home</span>

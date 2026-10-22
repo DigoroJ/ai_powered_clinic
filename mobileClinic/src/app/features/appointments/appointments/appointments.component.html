@@ -1,12 +1,19 @@
+
 <div class="page">
 
+  <!-- Page Header -->
   <div class="page-header">
     <div>
-      <h1>Appointments</h1>
-      <p>Manage patient appointments and schedules.</p>
+      <h1>{{ pageTitle }}</h1>
+      <p>{{ pageDescription }}</p>
     </div>
 
-    <button type="button" class="primary-button">
+    <button
+      *ngIf="canCreateAppointment"
+      type="button"
+      class="primary-button"
+      (click)="createAppointment()">
+
       <span class="material-icons">add</span>
       New Appointment
     </button>
@@ -19,6 +26,7 @@
       <div class="stat-icon">
         <span class="material-icons">event</span>
       </div>
+
       <div>
         <span>Today's Appointments</span>
         <strong>{{ todaysAppointments }}</strong>
@@ -29,6 +37,7 @@
       <div class="stat-icon">
         <span class="material-icons">pending_actions</span>
       </div>
+
       <div>
         <span>Pending</span>
         <strong>{{ pendingAppointments }}</strong>
@@ -39,6 +48,7 @@
       <div class="stat-icon">
         <span class="material-icons">check_circle</span>
       </div>
+
       <div>
         <span>Completed</span>
         <strong>{{ completedAppointments }}</strong>
@@ -88,7 +98,7 @@
         (action)="loadAppointments()">
       </app-empty-state>
 
-      <!-- No Appointments in Database -->
+      <!-- No Appointments -->
       <app-empty-state
         *ngIf="
           !loading &&
@@ -101,7 +111,7 @@
         message="Appointments will appear here once they have been booked.">
       </app-empty-state>
 
-      <!-- No Results for Selected Status -->
+      <!-- No Matching Appointments -->
       <app-empty-state
         *ngIf="
           !loading &&
@@ -126,24 +136,25 @@
         <thead>
           <tr>
             <th>Patient</th>
-            <th>Doctor</th>
+            <th *ngIf="showDoctorColumn">Doctor</th>
             <th>Service</th>
             <th>Date</th>
             <th>Time</th>
             <th>Status</th>
-            <th></th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
-
           <tr *ngFor="let appointment of filteredAppointments">
 
             <td class="patient-name">
               {{ appointment.patient }}
             </td>
 
-            <td>{{ appointment.doctor }}</td>
+            <td *ngIf="showDoctorColumn">
+              {{ appointment.doctor }}
+            </td>
 
             <td>{{ appointment.service }}</td>
 
@@ -155,7 +166,9 @@
               <span
                 class="status"
                 [class.pending]="appointment.status === 'Pending'"
-                [class.cancelled]="appointment.status === 'Cancelled'">
+                [class.cancelled]="appointment.status === 'Cancelled'"
+                [class.completed]="appointment.status === 'Completed'"
+                [class.confirmed]="appointment.status === 'Confirmed'">
 
                 {{ appointment.status }}
 
@@ -166,7 +179,8 @@
               <button
                 type="button"
                 class="icon-button"
-                aria-label="Appointment actions">
+                [attr.aria-label]="'Actions for appointment ' + appointment.id"
+                (click)="openAppointment(appointment)">
 
                 <span class="material-icons">more_vert</span>
 
@@ -174,13 +188,11 @@
             </td>
 
           </tr>
-
         </tbody>
 
       </table>
 
     </div>
-
   </div>
 
 </div>

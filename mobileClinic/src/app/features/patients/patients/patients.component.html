@@ -1,173 +1,345 @@
 
 <div class="page">
 
+  <!-- Page Header -->
   <div class="page-header">
     <div>
       <h1>Patients</h1>
       <p>Manage registered mobile clinic patients.</p>
     </div>
 
-    <button class="primary-button" type="button">
-      <span class="material-icons">person_add</span>
-      Add Patient
+    <button
+      class="primary-button"
+      type="button"
+      (click)="toggleAddPatientForm()">
+
+      <span class="material-icons">
+        {{ showAddPatientForm ? 'arrow_back' : 'person_add' }}
+      </span>
+
+      {{ showAddPatientForm ? 'Back to Patients' : 'Add Patient' }}
     </button>
   </div>
 
-  <!-- Statistics -->
-  <div class="stats-grid">
+  <!-- Add Patient Form -->
+  <div class="card add-patient-form" *ngIf="showAddPatientForm">
 
-    <div class="stat-card">
-      <div class="stat-icon">
-        <span class="material-icons">people</span>
-      </div>
+    <div class="toolbar">
       <div>
-        <span>Total Patients</span>
-        <strong>{{ patients.length }}</strong>
+        <h2>Add New Patient</h2>
+        <p>Enter the patient's details below.</p>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">
-        <span class="material-icons">person</span>
-      </div>
-      <div>
-        <span>Active Patients</span>
-        <strong>{{ activePatientsCount }}</strong>
-      </div>
-    </div>
+    <form #patientForm="ngForm" (ngSubmit)="addPatient()" novalidate>
 
-    <div class="stat-card">
-      <div class="stat-icon">
-        <span class="material-icons">update</span>
-      </div>
-      <div>
-        <span>Follow-ups</span>
-        <strong>{{ followUpCount }}</strong>
-      </div>
-    </div>
+      <div class="form-grid">
 
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            [(ngModel)]="newPatient.firstName"
+            required
+            maxlength="100"
+            placeholder="Enter first name">
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            [(ngModel)]="newPatient.lastName"
+            required
+            maxlength="100"
+            placeholder="Enter last name">
+        </div>
+
+        <div class="form-group">
+          <label for="dateOfBirth">Date of Birth *</label>
+          <input
+            id="dateOfBirth"
+            name="dateOfBirth"
+            type="date"
+            [(ngModel)]="newPatient.dateOfBirth"
+            required
+            [max]="maxDate">
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender *</label>
+          <select
+            id="gender"
+            name="gender"
+            [(ngModel)]="newPatient.gender"
+            required>
+            <option value="" disabled>Select gender</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            [(ngModel)]="newPatient.phone"
+            required
+            maxlength="20"
+            placeholder="e.g. 0821234567">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="newPatient.email"
+            email
+            maxlength="254"
+            placeholder="Enter email address">
+        </div>
+
+        <div class="form-group">
+          <label for="address">Residential Address</label>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            [(ngModel)]="newPatient.address"
+            maxlength="255"
+            placeholder="Enter residential address">
+        </div>
+
+        <div class="form-group">
+          <label for="status">Patient Status *</label>
+          <select
+            id="status"
+            name="status"
+            [(ngModel)]="newPatient.status"
+            required>
+            <option value="Active">Active</option>
+            <option value="Follow-up">Follow-up</option>
+          </select>
+        </div>
+
+      </div>
+
+      <p class="form-error" *ngIf="formError">
+        {{ formError }}
+      </p>
+
+      <p class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </p>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="toggleAddPatientForm()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="patientForm.invalid || savingPatient">
+
+          <span class="material-icons">
+            {{ savingPatient ? 'hourglass_empty' : 'person_add' }}
+          </span>
+
+          {{ savingPatient ? 'Saving...' : 'Save Patient' }}
+        </button>
+
+      </div>
+
+    </form>
   </div>
 
-  <div class="card">
+  <!-- Existing Patients Page -->
+  <div *ngIf="!showAddPatientForm">
 
-    <!-- Search and Filter -->
-    <div class="toolbar">
+    <!-- Statistics -->
+    <div class="stats-grid">
 
-      <div class="search-box">
-        <span class="material-icons">search</span>
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          placeholder="Search patients..."
-          aria-label="Search patients">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <span class="material-icons">people</span>
+        </div>
+        <div>
+          <span>Total Patients</span>
+          <strong>{{ patients.length }}</strong>
+        </div>
       </div>
 
-      <select
-        [(ngModel)]="selectedStatus"
-        aria-label="Filter patients by status">
-        <option value="All">All</option>
-        <option value="Active">Active</option>
-        <option value="Follow-up">Follow-up</option>
-      </select>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <span class="material-icons">person</span>
+        </div>
+        <div>
+          <span>Active Patients</span>
+          <strong>{{ activePatientsCount }}</strong>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <span class="material-icons">update</span>
+        </div>
+        <div>
+          <span>Follow-ups</span>
+          <strong>{{ followUpCount }}</strong>
+        </div>
+      </div>
 
     </div>
 
-    <!-- Loading State -->
-    <app-empty-state
-      *ngIf="loading"
-      variant="loading"
-      icon="hourglass_top"
-      title="Loading patients"
-      message="Please wait while we retrieve patient records.">
-    </app-empty-state>
+    <div class="card">
 
-    <!-- Error State -->
-    <app-empty-state
-      *ngIf="!loading && errorMessage"
-      variant="error"
-      icon="cloud_off"
-      title="Unable to load patients"
-      [message]="errorMessage"
-      actionLabel="Try again"
-      (action)="loadPatients()">
-    </app-empty-state>
+      <!-- Search and Filter -->
+      <div class="toolbar">
 
-    <!-- Patients Table -->
-    <div
-      class="table-wrapper"
-      *ngIf="!loading && !errorMessage && filteredPatients.length > 0">
+        <div class="search-box">
+          <span class="material-icons">search</span>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search patients..."
+            aria-label="Search patients">
+        </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Patient</th>
-            <th>ID</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Phone</th>
-            <th>Last Visit</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
+        <select
+          [(ngModel)]="selectedStatus"
+          aria-label="Filter patients by status">
+          <option value="All">All</option>
+          <option value="Active">Active</option>
+          <option value="Follow-up">Follow-up</option>
+        </select>
 
-        <tbody>
-          <tr *ngFor="let patient of filteredPatients">
+      </div>
 
-            <td class="patient-name">
-              <div class="avatar">
-                {{ patient.name.charAt(0) || '?' }}
-              </div>
-              {{ patient.name }}
-            </td>
+      <!-- Loading State -->
+      <app-empty-state
+        *ngIf="loading"
+        variant="loading"
+        icon="hourglass_top"
+        title="Loading patients"
+        message="Please wait while we retrieve patient records.">
+      </app-empty-state>
 
-            <td>{{ patient.id }}</td>
-            <td>{{ patient.age }}</td>
-            <td>{{ patient.gender }}</td>
-            <td>{{ patient.phone }}</td>
-            <td>{{ patient.lastVisit }}</td>
+      <!-- Error State -->
+      <app-empty-state
+        *ngIf="!loading && errorMessage"
+        variant="error"
+        icon="cloud_off"
+        title="Unable to load patients"
+        [message]="errorMessage"
+        actionLabel="Try again"
+        (action)="loadPatients()">
+      </app-empty-state>
 
-            <td>
-              <span
-                class="status"
-                [class.follow-up]="patient.status === 'Follow-up'">
-                {{ patient.status }}
-              </span>
-            </td>
+      <!-- Patients Table -->
+      <div
+        class="table-wrapper"
+        *ngIf="
+          !loading &&
+          !errorMessage &&
+          filteredPatients.length > 0
+        ">
 
-            <td>
-              <button
-                class="icon-button"
-                type="button"
-                [attr.aria-label]="'Actions for ' + patient.name">
-                <span class="material-icons">more_vert</span>
-              </button>
-            </td>
+        <table>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>ID</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Phone</th>
+              <th>Last Visit</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
 
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr *ngFor="let patient of filteredPatients">
+
+              <td class="patient-name">
+                <div class="avatar">
+                  {{ patient.name.charAt(0) || '?' }}
+                </div>
+                {{ patient.name }}
+              </td>
+
+              <td>{{ patient.id }}</td>
+              <td>{{ patient.age }}</td>
+              <td>{{ patient.gender }}</td>
+              <td>{{ patient.phone }}</td>
+              <td>{{ patient.lastVisit }}</td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.follow-up]="patient.status === 'Follow-up'">
+                  {{ patient.status }}
+                </span>
+              </td>
+
+              <td>
+                <button
+                  class="icon-button"
+                  type="button"
+                  [attr.aria-label]="'Actions for ' + patient.name">
+                  <span class="material-icons">more_vert</span>
+                </button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- No Patients -->
+      <app-empty-state
+        *ngIf="
+          !loading &&
+          !errorMessage &&
+          patients.length === 0
+        "
+        variant="empty"
+        icon="people"
+        title="No patients registered"
+        message="Patient records will appear here once they are available.">
+      </app-empty-state>
+
+      <!-- No Search Matches -->
+      <app-empty-state
+        *ngIf="
+          !loading &&
+          !errorMessage &&
+          patients.length > 0 &&
+          filteredPatients.length === 0
+        "
+        variant="empty"
+        icon="person_search"
+        title="No patients found"
+        message="Try changing your search or status filter.">
+      </app-empty-state>
 
     </div>
-
-    <!-- Empty State -->
-    <app-empty-state
-      *ngIf="!loading && !errorMessage && patients.length === 0"
-      variant="empty"
-      icon="people"
-      title="No patients registered"
-      message="Patient records will appear here once they are available.">
-    </app-empty-state>
-
-    <!-- Search Has No Matches -->
-    <app-empty-state
-      *ngIf="!loading && !errorMessage && patients.length > 0 && filteredPatients.length === 0"
-      variant="empty"
-      icon="person_search"
-      title="No patients found"
-      message="Try changing your search or status filter.">
-    </app-empty-state>
-
   </div>
 
 </div>

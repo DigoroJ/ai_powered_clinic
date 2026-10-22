@@ -3,6 +3,45 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
+// ==============================
+// Symptom Assessment Interfaces
+// ==============================
+
+export interface SymptomAssessmentPayload {
+  patient_id: number;
+  symptoms: string[];
+  duration: string;
+  severity: string;
+  additional_details?: string;
+}
+
+export interface SymptomAssessment {
+  id: number;
+  patient_id: number;
+  symptoms: string[];
+  duration: string;
+  severity: string;
+  additional_details: string | null;
+  created_at: string;
+}
+
+export interface SymptomAssessmentResponse {
+  success: boolean;
+  message: string;
+  data: SymptomAssessment;
+}
+
+export interface SymptomAssessmentsListResponse {
+  success: boolean;
+  data: SymptomAssessment[];
+}
+
+
+// ==============================
+// API Service
+// ==============================
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,41 +51,58 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+
+  // ==============================
+  // Services
+  // ==============================
+
   getServices(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/services`
     );
   }
 
-  // Get all doctors
+
+  // ==============================
+  // Doctors
+  // ==============================
+
   getDoctors(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/doctors`
     );
   }
 
-  // Get dashboard statistics
+
+  // ==============================
+  // Dashboard
+  // ==============================
+
   getDashboardStats(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/dashboard/stats`
     );
   }
 
-  // Get all appointments
+
+  // ==============================
+  // Appointments
+  // ==============================
+
   getAppointments(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/appointments`
     );
   }
 
-  // Get appointments for a specific patient
-  getPatientAppointments(patientId: string | number): Observable<any> {
+  getPatientAppointments(
+    patientId: string | number
+  ): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/appointments/patient/${patientId}`
     );
   }
 
-  // Book an appointment
   bookAppointment(appointment: any): Observable<any> {
     return this.http.post<any>(
       `${this.apiUrl}/appointments`,
@@ -54,11 +110,33 @@ export class ApiService {
     );
   }
 
+
+  // ==============================
+  // Patients
+  // ==============================
+
   getPatients(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/patients`
     );
   }
+
+  createPatient(patient: {
+    first_name: string;
+    last_name: string;
+    email: string | null;
+    phone: string | null;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/patients`,
+      patient
+    );
+  }
+
+
+  // ==============================
+  // Nurses
+  // ==============================
 
   getNurses(): Observable<any> {
     return this.http.get<any>(
@@ -66,56 +144,91 @@ export class ApiService {
     );
   }
 
-  getCurrentDatasetEda() {
+
+  // ==============================
+  // Dataset EDA
+  // ==============================
+
+  getCurrentDatasetEda(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/dataset/eda/current`
     );
   }
 
-  getAiAnalytics() {
+
+  // ==============================
+  // AI Analytics
+  // ==============================
+
+  getAiAnalytics(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/ai/analytics`
     );
   }
 
 
-predictDisease(patientData: {
-  fever: number;
-  cough: number;
-  rash: number;
-  headache: number;
-  vomiting: number;
-  fatigue: number;
-  sore_throat: number;
-  breathing_issue: number;
-  age: number;
-  gender: string;
-  temperature: number;
-  days_symptoms: number;
-  travel_history: number;
-}) {
-  return this.http.post<any>(
-    `${this.apiUrl}/ai/triage/predict`,
-    patientData
-  );
-}
+  // ==============================
+  // AI Disease Prediction
+  // ==============================
 
-getRecentAiTriageCases() {
-  return this.http.get<any>(
-    `${this.apiUrl}/ai/triage/cases`
-  );
-}
+  predictDisease(patientData: {
+    fever: number;
+    cough: number;
+    rash: number;
+    headache: number;
+    vomiting: number;
+    fatigue: number;
+    sore_throat: number;
+    breathing_issue: number;
+    age: number;
+    gender: string;
+    temperature: number;
+    days_symptoms: number;
+    travel_history: number;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/ai/triage/predict`,
+      patientData
+    );
+  }
 
-createPatient(patient: {
-  first_name: string;
-  last_name: string;
-  email: string | null;
-  phone: string | null;
-}) {
-  return this.http.post<any>(
-    `${this.apiUrl}/patients`,
-    patient
-  );
-}
+
+  // ==============================
+  // AI Triage Cases
+  // ==============================
+
+  getRecentAiTriageCases(): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/ai/triage/cases`
+    );
+  }
+
+
+  // ==============================
+  // Symptom Assessments
+  // ==============================
+
+  /**
+   * Save a patient's symptom assessment.
+   *
+   * POST /api/symptom-assessments
+   */
+  createSymptomAssessment(
+    payload: SymptomAssessmentPayload
+  ): Observable<SymptomAssessmentResponse> {
+    return this.http.post<SymptomAssessmentResponse>(
+      `${this.apiUrl}/symptom-assessments`,
+      payload
+    );
+  }
+
+
+  getPatientSymptomAssessments(
+    patientId: number
+  ): Observable<SymptomAssessmentsListResponse> {
+    return this.http.get<SymptomAssessmentsListResponse>(
+      `${this.apiUrl}/symptom-assessments/patient/${patientId}`
+    );
+  }
 
 }

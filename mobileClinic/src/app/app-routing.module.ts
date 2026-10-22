@@ -169,7 +169,11 @@ const routes: Routes = [
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full'
-    }
+    },
+    {
+      path: 'ai-triage',
+      component: AiTriageComponent
+    },
   ]
 },
 
@@ -194,7 +198,11 @@ const routes: Routes = [
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full'
-    }
+    },
+    {
+      path: 'ai-triage',
+      component: AiTriageComponent
+    },
   ]
 },
 
